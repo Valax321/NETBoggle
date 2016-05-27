@@ -1,0 +1,10 @@
+D:\School\Boggle\NETBoggle\NETBoggleClient\bin\Debug\NETBoggleClient.exe.config
+D:\School\Boggle\NETBoggle\NETBoggleClient\bin\Debug\NETBoggleClient.exe
+D:\School\Boggle\NETBoggle\NETBoggleClient\bin\Debug\NETBoggleClient.pdb
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.csprojResolveAssemblyReference.cache
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.MainMenu.resources
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.Properties.Resources.resources
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.csproj.GenerateResource.Cache
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.exe
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.pdb
+D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.Debugger.resources
