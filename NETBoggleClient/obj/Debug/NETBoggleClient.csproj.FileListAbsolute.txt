@@ -8,3 +8,8 @@ D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.csproj.Gene
 D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.exe
 D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.pdb
 D:\School\Boggle\NETBoggle\NETBoggleClient\obj\Debug\NETBoggleClient.Debugger.resources
+D:\School\Boggle\NETBoggle\NETBoggleClient\bin\Debug\Newtonsoft.Json.dll
+D:\School\Boggle\NETBoggle\NETBoggleClient\bin\Debug\Newtonsoft.Json.xml
+D:\School\Boggle\NETBoggle\out\NETBoggleClient.exe.config
+D:\School\Boggle\NETBoggle\out\NETBoggleClient.exe
+D:\School\Boggle\NETBoggle\out\NETBoggleClient.pdb

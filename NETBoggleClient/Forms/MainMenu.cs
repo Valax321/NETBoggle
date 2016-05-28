@@ -12,8 +12,6 @@ namespace NETBoggleClient
 {
     public partial class MainMenu : Form
     {
-
-
         public MainMenu(string[] progargs)
         {
             InitializeComponent();
@@ -25,6 +23,17 @@ namespace NETBoggleClient
                     Debug.SetupLog(new Debugger());
                 }
             }
+        }
+
+        private void MainMenu_Load(object sender, EventArgs e)
+        {
+            PlayerSettings.LoadPlayerSettings();
+            name.Text = PlayerSettings.Settings.PlayerName;
+        }
+
+        private void MainMenu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            PlayerSettings.SavePlayerSettings();
         }
     }
 }
