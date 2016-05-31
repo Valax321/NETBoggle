@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,7 +7,7 @@
     <ProjectGuid>{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NETBoggleClient</RootNamespace>
+    <RootNamespace>NETBoggle.Client</RootNamespace>
     <AssemblyName>NETBoggleClient</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -133,4 +133,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="NETBoggle.Networking\NETBoggle.Networking.csproj">
+      <Project>{33714C7C-4581-4753-95A0-94A1F2D55794}</Project>
+      <Name>NETBoggle.Networking</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

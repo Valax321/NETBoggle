@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace NETBoggleClient
+namespace NETBoggle.Client
 {
     public partial class Debugger : Form
     {

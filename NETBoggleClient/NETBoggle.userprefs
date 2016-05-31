@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="NETBoggle.Client.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="NETBoggle.Networking/UDPRedirect.cs">
+    <Files>
+      <File FileName="NETBoggle.Networking/Proxy.cs" Line="13" Column="6" />
+      <File FileName="NETBoggle.Networking/UDPRedirect.cs" Line="14" Column="9" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

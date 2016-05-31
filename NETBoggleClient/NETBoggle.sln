@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
+# Visual Studio 2012
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETBoggleClient", "NETBoggleClient.csproj", "{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETBoggle.Client", "NETBoggle.Client.csproj", "{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETBoggle.Networking", "NETBoggle.Networking\NETBoggle.Networking.csproj", "{33714C7C-4581-4753-95A0-94A1F2D55794}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,6 +13,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{33714C7C-4581-4753-95A0-94A1F2D55794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33714C7C-4581-4753-95A0-94A1F2D55794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33714C7C-4581-4753-95A0-94A1F2D55794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33714C7C-4581-4753-95A0-94A1F2D55794}.Release|Any CPU.Build.0 = Release|Any CPU
 		{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64F506B4-5FE9-42E5-9168-04A3CF18DEF1}.Release|Any CPU.ActiveCfg = Release|Any CPU

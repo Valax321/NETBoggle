@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace NETBoggleClient
+namespace NETBoggle.Client
 {
     /// <summary>
     /// Loading and storage of player settings (name etc)
