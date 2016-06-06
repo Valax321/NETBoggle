@@ -22,6 +22,14 @@ namespace NETBoggle.Client
             public bool UseProxy;
             public string Proxy_Host;
             public string Proxy_User;
+
+            public PlayerInfo(string name, bool proxy, string p_host, string p_user)
+            {
+                PlayerName = name;
+                UseProxy = proxy;
+                Proxy_Host = p_host;
+                Proxy_User = p_user;
+            }
         }
 
         const string filename = "settings.json"; //Where we load our settings from.

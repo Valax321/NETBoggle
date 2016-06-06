@@ -20,7 +20,11 @@ $RECYCLE.BIN/
 #Compiled folder
 out/
 NETBoggleClient/bin/
+NETBoggleClient/obj/
+NETBoggleClient/NETBoggle.Networking/obj
+NETBoggleClient/NETBoggle.Networking/bin
 
+!packages/*.dll
 
 # =========================
 # Operating System Files

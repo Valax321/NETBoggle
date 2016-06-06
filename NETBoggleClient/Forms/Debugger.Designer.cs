@@ -1,4 +1,4 @@
-﻿namespace NETBoggleClient
+﻿namespace NETBoggle.Client
 {
     partial class Debugger
     {

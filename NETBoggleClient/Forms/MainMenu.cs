@@ -12,6 +12,10 @@ namespace NETBoggle.Client
 {
     public partial class MainMenu : Form
     {
+        SettingsDialog options = new SettingsDialog();
+
+        const int GameLength = 60; //Length in seconds
+
         public MainMenu(string[] progargs)
         {
             InitializeComponent();
@@ -28,12 +32,17 @@ namespace NETBoggle.Client
         private void MainMenu_Load(object sender, EventArgs e)
         {
             PlayerSettings.LoadPlayerSettings();
-            name.Text = PlayerSettings.Settings.PlayerName;
+            name.Text = string.Format("Welcome, {0}!", PlayerSettings.Settings.PlayerName);
         }
 
         private void MainMenu_FormClosed(object sender, FormClosedEventArgs e)
         {
-            PlayerSettings.SavePlayerSettings();
+
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            options.ShowDialog();
         }
     }
 }
