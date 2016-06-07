@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NETBoggle.Networking;
 
 namespace NETBoggle.Client
 {
@@ -23,29 +24,30 @@ namespace NETBoggle.Client
             PlayerSettings.LoadPlayerSettings();
 
             textboxPlayerName.Text = PlayerSettings.Settings.PlayerName;
-            cbUseProxy.Checked = PlayerSettings.Settings.UseProxy;
+            textBoxServerName.Text = PlayerSettings.Settings.Host_ServerName;
+            textBoxServerPassword.Text = PlayerSettings.Settings.Host_ServerPassword;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            if (textBoxServerName.Text == string.Empty)
+            {
+                MessageBox.Show("Please enter a server name", "Invalid server name", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            PlayerSettings.Settings.Host_ServerName = textBoxServerName.Text;
+            PlayerSettings.Settings.Host_ServerPassword = textBoxServerPassword.Text;
+            PlayerSettings.Settings.PlayerName = textboxPlayerName.Text;
+
             PlayerSettings.SavePlayerSettings();
             Close();
-        }
-
-        private void cbUseProxy_CheckedChanged(object sender, EventArgs e)
-        {
-            PlayerSettings.Settings.UseProxy = cbUseProxy.Checked;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             PlayerSettings.LoadPlayerSettings();
             Close();
-        }
-
-        private void textboxPlayerName_TextChanged(object sender, EventArgs e)
-        {
-            PlayerSettings.Settings.PlayerName = textboxPlayerName.Text;
         }
     }
 }

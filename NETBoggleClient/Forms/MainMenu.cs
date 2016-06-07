@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NETBoggle.Networking;
 
 namespace NETBoggle.Client
 {
@@ -14,7 +15,9 @@ namespace NETBoggle.Client
     {
         SettingsDialog options = new SettingsDialog();
 
-        const int GameLength = 60; //Length in seconds
+        Server HostServer;
+
+        Player us; //Our player
 
         public MainMenu(string[] progargs)
         {
@@ -29,10 +32,24 @@ namespace NETBoggle.Client
             }
         }
 
+        public bool ConnectPlayer()
+        {
+            try
+            {
+                us = new Player() { PlayerName = PlayerSettings.Settings.PlayerName };
+                HostServer.ConnectPlayer(us); //Connect us to the server
+                return true;
+            }
+
+            catch (ServerFullException e)
+            {
+                return false;
+            }
+        }
+
         private void MainMenu_Load(object sender, EventArgs e)
         {
             PlayerSettings.LoadPlayerSettings();
-            name.Text = string.Format("Welcome, {0}!", PlayerSettings.Settings.PlayerName);
         }
 
         private void MainMenu_FormClosed(object sender, FormClosedEventArgs e)
@@ -43,6 +60,24 @@ namespace NETBoggle.Client
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             options.ShowDialog();
+        }
+
+        private void hostNewGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HostServer = new Server(PlayerSettings.Settings.Host_ServerName, PlayerSettings.Settings.Host_ServerPassword);
+            Debug.Log(string.Format("Opened new server {0}", HostServer.ServerName));
+            ConnectPlayer();
+            ServerTick.Start();
+            Text = string.Format("NET Boggle on {0}", HostServer.ServerName);
+        }
+
+        private void ServerTick_Tick(object sender, EventArgs e)
+        {
+            if (HostServer != null)
+            {
+                HostServer.Tick(1/ServerTick.Interval);
+                dataGridScoreboard.DataSource = HostServer.Players;
+            }
         }
     }
 }

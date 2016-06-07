@@ -18,17 +18,14 @@ namespace NETBoggle.Client
         {
             public string PlayerName;
 
-            //Proxy info
-            public bool UseProxy;
-            public string Proxy_Host;
-            public string Proxy_User;
+            public string Host_ServerName;
+            public string Host_ServerPassword;
 
-            public PlayerInfo(string name, bool proxy, string p_host, string p_user)
+            public PlayerInfo(string name, string s_name, string s_pass)
             {
                 PlayerName = name;
-                UseProxy = proxy;
-                Proxy_Host = p_host;
-                Proxy_User = p_user;
+                Host_ServerName = s_name;
+                Host_ServerPassword = s_pass;
             }
         }
 
