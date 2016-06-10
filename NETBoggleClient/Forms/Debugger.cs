@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NETBoggle.Networking;
 
 namespace NETBoggle.Client
 {
@@ -26,6 +27,11 @@ namespace NETBoggle.Client
             textboxDebugLog.Text += text + Environment.NewLine;
         }
 
+        public void UpdateStateLog(IBoggleState state, EventArgs e)
+        {
+            labelServerState.Text = string.Format("Server State: {0}", state);
+        }
+
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -38,6 +44,22 @@ namespace NETBoggle.Client
     public static class Debug
     {
         static Debugger CurLog;
+
+        public static Debugger DebugLog
+        {
+            get
+            {
+                if (CurLog != null)
+                {
+                    return CurLog;
+                }
+                else
+                {
+                    MessageBox.Show("Attempted to access null log screen");
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// Log text to the console

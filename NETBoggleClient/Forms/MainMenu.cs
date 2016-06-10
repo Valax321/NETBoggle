@@ -30,6 +30,15 @@ namespace NETBoggle.Client
                     Debug.SetupLog(new Debugger());
                 }
             }
+
+            try
+            {
+                HostServer.GameChanged += new Server.GameStateChangedHandler(Debug.DebugLog.UpdateStateLog);
+            }
+            catch
+            {
+                Console.WriteLine("No log to attach event to.");
+            }
         }
 
         public bool ConnectPlayer()
@@ -43,8 +52,15 @@ namespace NETBoggle.Client
 
             catch (ServerFullException e)
             {
+                MessageBox.Show(e.ToString(), "Error connecting to server", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
+        }
+
+        public void StartServer()
+        {
+            HostServer.Start();
+            Debug.Log("Server started");
         }
 
         private void MainMenu_Load(object sender, EventArgs e)
@@ -67,6 +83,7 @@ namespace NETBoggle.Client
             HostServer = new Server(PlayerSettings.Settings.Host_ServerName, PlayerSettings.Settings.Host_ServerPassword);
             Debug.Log(string.Format("Opened new server {0}", HostServer.ServerName));
             ConnectPlayer();
+            StartServer();
             ServerTick.Start();
             Text = string.Format("NET Boggle on {0}", HostServer.ServerName);
         }

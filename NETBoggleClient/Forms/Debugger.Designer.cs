@@ -32,7 +32,10 @@
             this.menuDebug = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.labelServerState = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuDebug.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textboxDebugLog
@@ -43,7 +46,7 @@
             this.textboxDebugLog.Location = new System.Drawing.Point(12, 27);
             this.textboxDebugLog.Name = "textboxDebugLog";
             this.textboxDebugLog.ReadOnly = true;
-            this.textboxDebugLog.Size = new System.Drawing.Size(444, 339);
+            this.textboxDebugLog.Size = new System.Drawing.Size(444, 326);
             this.textboxDebugLog.TabIndex = 0;
             this.textboxDebugLog.Text = "";
             // 
@@ -73,12 +76,29 @@
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelServerState});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 356);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(468, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // labelServerState
+            // 
+            this.labelServerState.Name = "labelServerState";
+            this.labelServerState.Size = new System.Drawing.Size(70, 17);
+            this.labelServerState.Text = "Game State:";
+            // 
             // Debugger
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 378);
             this.ControlBox = false;
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.textboxDebugLog);
             this.Controls.Add(this.menuDebug);
             this.MainMenuStrip = this.menuDebug;
@@ -86,6 +106,8 @@
             this.Text = "Debugger";
             this.menuDebug.ResumeLayout(false);
             this.menuDebug.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -97,5 +119,7 @@
         private System.Windows.Forms.MenuStrip menuDebug;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel labelServerState;
     }
 }
