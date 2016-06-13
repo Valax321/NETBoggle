@@ -96,5 +96,27 @@ namespace NETBoggle.Client
                 dataGridScoreboard.DataSource = HostServer.Players;
             }
         }
+
+        //When we type a word
+        private void textBoxWordInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            //TEMP: directly to host server right now, change to send a message to the server over net.
+
+            if (e.KeyCode == Keys.Return)
+            {
+                if (HostServer == null)
+                    return;
+
+                if (string.IsNullOrWhiteSpace(textBoxWordInput.Text))
+                {
+                    textBoxWordInput.Text = string.Empty;
+                    return;
+                }
+
+                HostServer.PlayerSendWord(us, textBoxWordInput.Text);
+                textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine;
+                textBoxWordInput.Text = string.Empty;
+            }
+        }
     }
 }

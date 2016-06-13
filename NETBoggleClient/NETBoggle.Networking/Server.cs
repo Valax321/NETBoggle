@@ -126,6 +126,11 @@ namespace NETBoggle.Networking
             }
         }
 
+        public void PlayerSendWord(Player player, string word)
+        {
+
+        }
+
         public delegate void GameStateChangedHandler(IBoggleState newstate, EventArgs e);
 
         public event GameStateChangedHandler GameChanged; 

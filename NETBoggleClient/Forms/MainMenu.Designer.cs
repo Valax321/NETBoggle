@@ -56,7 +56,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dataGridScoreboard = new System.Windows.Forms.DataGridView();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxWordHistory = new System.Windows.Forms.TextBox();
             this.textBoxWordInput = new System.Windows.Forms.TextBox();
             this.buttonReadyRound = new System.Windows.Forms.Button();
             this.lblTimeRemain = new System.Windows.Forms.Label();
@@ -358,7 +358,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.textBox1);
+            this.groupBox3.Controls.Add(this.textBoxWordHistory);
             this.groupBox3.Controls.Add(this.textBoxWordInput);
             this.groupBox3.Location = new System.Drawing.Point(13, 238);
             this.groupBox3.Name = "groupBox3";
@@ -367,22 +367,23 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Words";
             // 
-            // textBox1
+            // textBoxWordHistory
             // 
-            this.textBox1.Location = new System.Drawing.Point(7, 20);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(337, 229);
-            this.textBox1.TabIndex = 1;
+            this.textBoxWordHistory.Location = new System.Drawing.Point(7, 20);
+            this.textBoxWordHistory.Multiline = true;
+            this.textBoxWordHistory.Name = "textBoxWordHistory";
+            this.textBoxWordHistory.ReadOnly = true;
+            this.textBoxWordHistory.Size = new System.Drawing.Size(337, 229);
+            this.textBoxWordHistory.TabIndex = 1;
             // 
             // textBoxWordInput
             // 
+            this.textBoxWordInput.AcceptsReturn = true;
             this.textBoxWordInput.Location = new System.Drawing.Point(6, 255);
             this.textBoxWordInput.Name = "textBoxWordInput";
-            this.textBoxWordInput.ReadOnly = true;
             this.textBoxWordInput.Size = new System.Drawing.Size(338, 20);
             this.textBoxWordInput.TabIndex = 0;
+            this.textBoxWordInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxWordInput_KeyDown);
             // 
             // buttonReadyRound
             // 
@@ -480,7 +481,7 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.DataGridView dataGridScoreboard;
         private System.Windows.Forms.TextBox textBoxWordInput;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxWordHistory;
         private System.Windows.Forms.Button buttonReadyRound;
         private System.Windows.Forms.Label lblTimeRemain;
         private System.Windows.Forms.Timer ServerTick;
