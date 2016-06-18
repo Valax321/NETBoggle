@@ -30,22 +30,17 @@ namespace NETBoggle.Client
                     Debug.SetupLog(new Debugger());
                 }
             }
-
-            try
-            {
-                HostServer.GameChanged += new Server.GameStateChangedHandler(Debug.DebugLog.UpdateStateLog);
-            }
-            catch
-            {
-                Console.WriteLine("No log to attach event to.");
-            }
         }
 
+        /// <summary>
+        /// Attempts to connect a player to the server we own.
+        /// </summary>
+        /// <returns>If the player was able to connect.</returns>
         public bool ConnectPlayer()
         {
             try
             {
-                us = new Player() { PlayerName = PlayerSettings.Settings.PlayerName };
+                us = new Player() { PlayerName = PlayerSettings.Settings.PlayerName, ClientInterface = this };
                 HostServer.ConnectPlayer(us); //Connect us to the server
                 return true;
             }
@@ -57,6 +52,9 @@ namespace NETBoggle.Client
             }
         }
 
+        /// <summary>
+        /// Start a new server
+        /// </summary>
         public void StartServer()
         {
             HostServer.Start();
@@ -78,6 +76,9 @@ namespace NETBoggle.Client
             options.ShowDialog();
         }
 
+        /// <summary>
+        /// This starts the server when we click File->New Server->Host New Server.
+        /// </summary>
         private void hostNewGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HostServer = new Server(PlayerSettings.Settings.Host_ServerName, PlayerSettings.Settings.Host_ServerPassword);
@@ -88,16 +89,23 @@ namespace NETBoggle.Client
             Text = string.Format("NET Boggle on {0}", HostServer.ServerName);
         }
 
+        /// <summary>
+        /// Updates the server by a single tick.
+        /// </summary>
         private void ServerTick_Tick(object sender, EventArgs e)
         {
             if (HostServer != null)
             {
-                HostServer.Tick(1/ServerTick.Interval);
+                HostServer.Tick(0.1f);
+                dataGridScoreboard.DataSource = null;
                 dataGridScoreboard.DataSource = HostServer.Players;
+                dataGridScoreboard.Update();
             }
         }
 
-        //When we type a word
+        /// <summary>
+        /// When the player types a word and hits the enter key.
+        /// </summary>
         private void textBoxWordInput_KeyDown(object sender, KeyEventArgs e)
         {
             //TEMP: directly to host server right now, change to send a message to the server over net.
@@ -113,10 +121,20 @@ namespace NETBoggle.Client
                     return;
                 }
 
+                if (HostServer.WordList.Contains(textBoxWordInput.Text))
+                {
+                    Debug.Log("Valid word");
+                }
+
                 HostServer.PlayerSendWord(us, textBoxWordInput.Text);
                 textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine;
                 textBoxWordInput.Text = string.Empty;
             }
+        }
+
+        private void buttonReadyRound_Click(object sender, EventArgs e)
+        {
+            us.Ready = true;
         }
     }
 }
