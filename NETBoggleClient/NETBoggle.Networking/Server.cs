@@ -41,6 +41,11 @@ namespace NETBoggle.Networking
         public void RandomiseDicePositions()
         {
             DiceLetters.Shuffle();
+
+            for (int i = 0; i < DiceLetters.Count; i++)
+            {
+                DiceLetters.ElementAt(i).SetPosition((int)Math.Floor((double)i / 4), i % 4);
+            }
         }
 
         /// <summary>
@@ -154,11 +159,70 @@ namespace NETBoggle.Networking
         /// </summary>
         public void PlayerSendWord(Player player, string word)
         {
-            if (!player.TypedWords.Contains(word) && WordList.Contains(word))
+            if (!player.TypedWords.Contains(word) && WordList.Contains(word) && CheckWordInPlay(word))
             {
+                Console.WriteLine("Actually valid");
                 player.TypedWords.Add(word);
             }
         }
+
+        //Thanks David!
+        public bool CheckWordInPlay(string word)
+        {
+            word = word.ToUpper();
+            bool isConnected = false;
+            string currentChar = "";
+            List<Tuple<int, int>> labelPositions = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> lastLabelPositions = null;
+            for (int i = 0; i < word.Length; i++)
+            {
+                currentChar = word[i].ToString();
+                if (currentChar == "Q")
+                {
+                    currentChar = "Qu";
+                }
+                else if (currentChar == "U")
+                {
+                    isConnected = true;
+                    continue;
+                }
+                isConnected = false;
+                foreach (BoggleDie l in DiceLetters)
+                {
+                    if (l.CurrentLetter == currentChar)
+                    {
+                        //labelPositions.Add(ExtensionMethods.CoordinatesOf<BoggleDie>(DiceLetters, l)); //Dead
+                        labelPositions.Add(l.Position);
+                        break; // Try this for searching if it exists
+                    }
+                }
+                foreach (Tuple<int, int> t in labelPositions)
+                {
+                    if (lastLabelPositions == null)
+                    {
+                        isConnected = true;
+                        continue;
+                    }
+                    foreach (Tuple<int, int> n in lastLabelPositions)
+                    {
+                        int tupleDistanceX = Math.Abs(n.Item1 - t.Item1);
+                        int tupleDistanceY = Math.Abs(n.Item2 - t.Item2);
+                        if (tupleDistanceX <= 1 && tupleDistanceY <= 1)
+                        {
+                            isConnected = true;
+                        }
+                    }
+                }
+                Console.WriteLine(string.Format("Letter: {0} Connected: {1}", currentChar, isConnected));
+                if (!isConnected)
+                {
+                    break;
+                }
+                lastLabelPositions = labelPositions;
+            }
+            return isConnected;
+        }
+
     }
 
     /// <summary>
@@ -176,7 +240,7 @@ namespace NETBoggle.Networking
     /// <summary>
     /// Wrapper for extension method List<T>.Shuffle()
     /// </summary>
-    public static class DiceShuffle
+    public static class ExtensionMethods
     {
         private static Random rng = new Random();
 
@@ -191,6 +255,24 @@ namespace NETBoggle.Networking
                 list[k] = list[n];
                 list[n] = value;
             }
+        }
+
+        //Thanks David!
+        public static Tuple<int, int> CoordinatesOf<T>(this T[,] matrix, T value)
+        {
+            int w = matrix.GetLength(0); // width
+            int h = matrix.GetLength(1); // height
+
+            for (int x = 0; x < w; ++x)
+            {
+                for (int y = 0; y < h; ++y)
+                {
+                    if (matrix[x, y].Equals(value))
+                        return Tuple.Create(x, y); // Returns the position of the label in the multidimentional array
+                }
+            }
+
+            return null;
         }
     }
 

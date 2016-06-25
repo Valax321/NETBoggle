@@ -15,9 +15,18 @@ namespace NETBoggle.Networking
 
         public string[] Letters = new string[NUM_LETTERS];
 
+        public string CurrentLetter = string.Empty;
+
+        public Tuple<int, int> Position = new Tuple<int, int>(0, 0);
+
         public BoggleDie(string[] letters)
         {
             Letters = letters;
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            Position = new Tuple<int, int>(x, y);
         }
 
         /// <summary>
@@ -27,7 +36,8 @@ namespace NETBoggle.Networking
         public string GetRandLetter()
         {
             Random r = new Random();
-            return Letters[r.Next(0, NUM_LETTERS - 1)];
+            CurrentLetter = Letters[r.Next(0, NUM_LETTERS - 1)];
+            return CurrentLetter;
         }
     }
 

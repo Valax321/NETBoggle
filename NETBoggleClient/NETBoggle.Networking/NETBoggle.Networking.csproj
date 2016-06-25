@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="BoggleDie.cs" />
     <Compile Include="BoggleGameState.cs" />
+    <Compile Include="Bytecode\Bytecode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>

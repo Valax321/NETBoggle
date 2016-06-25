@@ -178,31 +178,41 @@ namespace NETBoggle.Networking
 
             foreach (Player p in cur_s.Players)
             {
+                int temp_score = 0;
+
+                // Problems here:
+                // Score can get unreasonably large after quite a few rounds (e.g. 19 rather than 5).
+
                 foreach (string word in p.TypedWords)
                 {
                     if (word.Length <= 4)
                     {
                         p.Score += 1;
+                        temp_score += 1;
                     }
                     else if (word.Length == 5)
                     {
                         p.Score += 2;
+                        temp_score += 2;
                     }
                     else if (word.Length == 6)
                     {
                         p.Score += 3;
+                        temp_score += 3;
                     }
                     else if (word.Length == 7)
                     {
                         p.Score += 5;
+                        temp_score += 5;
                     }
                     else
                     {
                         p.Score += 11;
+                        temp_score += 11;
                     }
                 }
 
-                MessageBox.Show(p.Score.ToString(), "Your Score This Round");
+                MessageBox.Show(temp_score.ToString(), "Your Score This Round");
             }
         }
 

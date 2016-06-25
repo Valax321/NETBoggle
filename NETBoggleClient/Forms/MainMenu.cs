@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NETBoggle.Networking;
+using NETBoggle.Networking.Bytecode;
 
 namespace NETBoggle.Client
 {
@@ -121,11 +122,6 @@ namespace NETBoggle.Client
                     return;
                 }
 
-                if (HostServer.WordList.Contains(textBoxWordInput.Text))
-                {
-                    Debug.Log("Valid word");
-                }
-
                 HostServer.PlayerSendWord(us, textBoxWordInput.Text);
                 textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine;
                 textBoxWordInput.Text = string.Empty;
@@ -135,6 +131,28 @@ namespace NETBoggle.Client
         private void buttonReadyRound_Click(object sender, EventArgs e)
         {
             us.Ready = true;
+        }
+
+        private void dumpDicePositionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (HostServer != null)
+            {
+                for (int i = 0; i < HostServer.DiceLetters.Count; i++)
+                {
+                    Debug.Log(string.Format("Die {0}: {1}, {2}", i, HostServer.DiceLetters.ElementAt(i).Position.Item1, HostServer.DiceLetters.ElementAt(i).Position.Item2));
+                }
+            }
+        }
+
+        private void dumpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Debug.Log(Bytecode.Generate(BoggleInstructions.CONNECT, d_ins1.Text, d_ins2.Text));
+        }
+
+        private void interpretBytecodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string b = Bytecode.Generate(BoggleInstructions.CONNECT, d_ins1.Text, d_ins2.Text);
+            Bytecode.Parse<string, string>(b);
         }
     }
 }
