@@ -1,0 +1,75 @@
+public partial class Boggle : Form
+{
+private bool CheckIfTextInPanel(string word)
+        {
+            bool isConnected = false;
+            string currentChar = "";
+            List<Tuple<int,int>> labelPositions = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> lastLabelPositions = null;
+            for (int i = 0; i < word.Length; i++)
+            {
+                currentChar = word[i].ToString();
+                if(currentChar == "Q")
+                {
+                    currentChar = "Qu";
+                }
+                else if (currentChar == "U")
+                {
+                    isConnected = true;
+                    continue;
+                }
+                isConnected = false;
+                foreach (Label l in arrLabel)
+                {
+                    if (l.Text == currentChar.ToString())
+                    {
+                        labelPositions.Add(ArrayCheck.CoordinatesOf<Label>(arrLabel, l));
+                        break; // Try this for searching if it exists
+                    }
+                }
+                foreach (Tuple<int,int> t in labelPositions)
+                {
+                    if(lastLabelPositions == null)
+                    {
+                        isConnected = true;
+                        continue;
+                    }
+                    foreach(Tuple<int,int> n in lastLabelPositions)
+                    {
+                        int tupleDistanceX = Math.Abs(n.Item1 - t.Item1);
+                        int tupleDistanceY = Math.Abs(n.Item2 - t.Item2);
+                        if (tupleDistanceX <= 1 && tupleDistanceY <= 1)
+                        {
+                            isConnected = true;
+                        }
+                    }
+                }
+                if(!isConnected)
+                {
+                    break;
+                }
+                lastLabelPositions = labelPositions;
+            }
+            return isConnected;
+        }
+}
+
+public static class ArrayCheck
+    {
+        public static Tuple<int, int> CoordinatesOf<T>(this T[,] matrix, T value)
+        {
+            int w = matrix.GetLength(0); // width
+            int h = matrix.GetLength(1); // height
+
+            for (int x = 0; x < w; ++x)
+            {
+                for (int y = 0; y < h; ++y)
+                {
+                    if (matrix[x, y].Equals(value))
+                        return Tuple.Create(x, y); // Returns the position of the label in the multidimentional array
+                }
+            }
+
+            return null;
+        }
+    }

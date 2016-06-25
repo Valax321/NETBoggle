@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Valax321")]
-[assembly: AssemblyProduct("NETBoggleClient")]
+[assembly: AssemblyProduct("NETBoggle Client")]
 [assembly: AssemblyCopyright("Copyright © Valax321 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

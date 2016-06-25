@@ -2,7 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="NETBoggle.Networking/Server.cs">
     <Files>
-      <File FileName="NETBoggle.Networking/Server.cs" Line="7" Column="1" />
+      <File FileName="NETBoggle.Networking/Server.cs" Line="170" Column="9" />
+      <File FileName="NETBoggle.Networking/BoggleGameState.cs" Line="6" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

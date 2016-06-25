@@ -1,0 +1,60 @@
+private bool CheckIfTextInPanel(string word) // -------------------------------------------------------------------- NEW PROBLEM, for words like DAD, the could just refer back to the original character, how to prevent that?
+        {
+            bool isConnectedTotal = false; // If this characted is next to the last character
+            bool isConnectedSinglePosition = false; // If one instance of this character's position is next to the last character's position
+            string currentChar = ""; // The current character
+            List<Tuple<int,int>> labelPositions = null; // The current character's positions
+            List<Tuple<int, int>> lastLabelPositions = null; // The last character's positions
+
+            for (int i = 0; i < word.Length; i++) // Loops through the word and seperates each character to check if they are next to each other
+            {
+                labelPositions = new List<Tuple<int, int>>();
+                currentChar = word[i].ToString(); // Set the current character
+                if(currentChar == "Q") // If it's Q, then it will have to check against Qu
+                {
+                    currentChar = "Qu";
+                }
+                else if (currentChar == "U") // If it's U, then it has already been checked with Qu
+                {
+                    isConnectedTotal = true; // Skip this loop
+                    continue;
+                }
+                isConnectedTotal = false; // Set it to false at the beginning of every character's loop
+                foreach (Label l in arrLabel) // Loop through all the labels
+                {
+                    if (l.Text == currentChar) // If this charater is equal to any of the labels
+                    {
+                        labelPositions.Add(ArrayCheck.CoordinatesOf<Label>(arrLabel, l)); // Add the position of that label into a list
+                    }
+                }
+                foreach (Tuple<int, int> t in labelPositions.ToList<Tuple<int,int>>()) // Loops through the current character's positions
+                {
+                    if (lastLabelPositions == null) // If there's nothing in the last position, then this must be the first character
+                    {
+                        isConnectedTotal = true;
+                        continue; // Skip this loop
+                    }
+                    isConnectedSinglePosition = false;
+                    foreach(Tuple<int,int> n in lastLabelPositions) // Loops through last character's positions
+                    {
+                        int tupleDistanceX = Math.Abs(n.Item1 - t.Item1); // Get the difference in X positions between the two loops
+                        int tupleDistanceY = Math.Abs(n.Item2 - t.Item2); // Get the difference in Y positions between the two loops
+                        if (tupleDistanceX <= 1 && tupleDistanceY <= 1) // If the difference in distance is less than 1
+                        {
+                            isConnectedTotal = true; // Then this character is connected
+                            isConnectedSinglePosition = true;
+                        }
+                    }
+                    if (!isConnectedSinglePosition) // This position isn't connected to the last position
+                    {
+                        labelPositions.Remove(t); // Remove this position
+                    }
+                }
+                if (!isConnectedTotal) // If this character isn't connected to the last one in the panel
+                {
+                    break; // End the loop
+                }
+                lastLabelPositions = labelPositions; // Set the current positions as the last
+            }
+            return isConnectedTotal; // Return if this word is connected in panel or not
+        }

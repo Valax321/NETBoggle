@@ -1,0 +1,12 @@
+Bytecode:
+Packet: <PLAYER_BYTE_VAL|INSTRCUTION_BYTE_VAL|INSTRUCTION_DATA|INSTRUCTION_DATA_2>
+
+e.g.
+Player index is 0
+send word instrction is 5
+
+<0|5|test_word>
+
+player index is 10
+set element text instructuion is 2
+<10|2|label1|hello, world!>
