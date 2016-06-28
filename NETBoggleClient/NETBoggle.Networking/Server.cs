@@ -9,9 +9,6 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
 
-//Controls.find() to get form controls at runtime
-// PROBLEM SOLVED!!
-
 namespace NETBoggle.Networking
 {
     /// <summary>
@@ -19,7 +16,7 @@ namespace NETBoggle.Networking
     /// </summary>
     public class Server
     {
-        public const int PLAYER_CAP = 50; // Max players per server.
+        const int PLAYER_CAP = 50; // Max players per server.
         public const int GameLength = 60; //Length in seconds
 
         const string DICE_LOCATION = "dice.json";
@@ -27,17 +24,24 @@ namespace NETBoggle.Networking
 
         public List<BoggleDie> DiceLetters = new List<BoggleDie>(16);
 
-        public List<string> WordList = new List<string>();
+        List<string> WordList = new List<string>();
 
         public float DeltaTime;
 
         IBoggleState CurrentState;
 
+        /// <summary>
+        /// Get current server state.
+        /// </summary>
+        /// <returns></returns>
         public IBoggleState GetState()
         {
             return CurrentState;
         }
-    
+        
+        /// <summary>
+        /// Set dice positions to random values
+        /// </summary>
         public void RandomiseDicePositions()
         {
             DiceLetters.Shuffle();
@@ -115,7 +119,7 @@ namespace NETBoggle.Networking
         }
 
         public string ServerName = "Boggle Server";
-        public string ServerPassword = string.Empty;
+        string ServerPassword = string.Empty;
 
         public List<Player> Players = new List<Player>(PLAYER_CAP);
 
@@ -135,6 +139,9 @@ namespace NETBoggle.Networking
             }
         }
 
+        /// <summary>
+        /// Start game
+        /// </summary>
         public void Start()
         {
             CurrentState = new BoggleWaitReady();
@@ -155,7 +162,7 @@ namespace NETBoggle.Networking
         }
 
         /// <summary>
-        /// When a player types a word.
+        /// Check word validity
         /// </summary>
         public void PlayerSendWord(Player player, string word)
         {
@@ -166,7 +173,11 @@ namespace NETBoggle.Networking
             }
         }
 
-        //Thanks David!
+        /// <summary>
+        /// Check if word is on board
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
         public bool CheckWordInPlay(string word)
         {
             word = word.ToUpper();
@@ -255,24 +266,6 @@ namespace NETBoggle.Networking
                 list[k] = list[n];
                 list[n] = value;
             }
-        }
-
-        //Thanks David!
-        public static Tuple<int, int> CoordinatesOf<T>(this T[,] matrix, T value)
-        {
-            int w = matrix.GetLength(0); // width
-            int h = matrix.GetLength(1); // height
-
-            for (int x = 0; x < w; ++x)
-            {
-                for (int y = 0; y < h; ++y)
-                {
-                    if (matrix[x, y].Equals(value))
-                        return Tuple.Create(x, y); // Returns the position of the label in the multidimentional array
-                }
-            }
-
-            return null;
         }
     }
 

@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NETBoggle.Networking;
 
 namespace NETBoggle.Client
 {
+    /// <summary>
+    /// Form for editing player preferences, such as username and server details.
+    /// </summary>
     public partial class SettingsDialog : Form
     {
 
@@ -19,6 +14,9 @@ namespace NETBoggle.Client
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Load in the player preferences.
+        /// </summary>
         private void SettingsDialog_Load(object sender, EventArgs e)
         {
             PlayerSettings.LoadPlayerSettings();
@@ -28,6 +26,9 @@ namespace NETBoggle.Client
             textBoxServerPassword.Text = PlayerSettings.Settings.Host_ServerPassword;
         }
 
+        /// <summary>
+        /// Save the player preferences.
+        /// </summary>
         private void buttonSave_Click(object sender, EventArgs e)
         {
             if (textBoxServerName.Text == string.Empty)
@@ -44,6 +45,9 @@ namespace NETBoggle.Client
             Close();
         }
 
+        /// <summary>
+        /// Refresh the player settings and close.
+        /// </summary>
         private void buttonCancel_Click(object sender, EventArgs e)
         {
             PlayerSettings.LoadPlayerSettings();

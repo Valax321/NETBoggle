@@ -1,22 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NETBoggle.Networking;
 using NETBoggle.Networking.Bytecode;
 
 namespace NETBoggle.Client
 {
+    /// <summary>
+    /// Form for the main gameplay of Boggle.
+    /// </summary>
     public partial class MainMenu : Form
     {
         SettingsDialog options = new SettingsDialog();
 
         Server HostServer;
+
+        bool Debugging = false;
 
         Player us; //Our player
 
@@ -29,8 +28,17 @@ namespace NETBoggle.Client
                 if (s == "-debug")
                 {
                     Debug.SetupLog(new Debugger());
+                    Debugging = true;
                 }
+
+                Bytecode<string, string>.BindInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, test_binding);
             }
+        }
+
+        public void test_binding(string o, string t)
+        {
+            Debug.Log(o);
+            Debug.Log(t);
         }
 
         /// <summary>
@@ -128,6 +136,9 @@ namespace NETBoggle.Client
             }
         }
 
+        /// <summary>
+        /// Notify the server that we're ready to play.
+        /// </summary>
         private void buttonReadyRound_Click(object sender, EventArgs e)
         {
             us.Ready = true;
@@ -146,13 +157,24 @@ namespace NETBoggle.Client
 
         private void dumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Debug.Log(Bytecode.Generate(BoggleInstructions.CONNECT, d_ins1.Text, d_ins2.Text));
+            Debug.Log(Bytecode<string, string>.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text));
         }
 
         private void interpretBytecodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string b = Bytecode.Generate(BoggleInstructions.CONNECT, d_ins1.Text, d_ins2.Text);
-            Bytecode.Parse<string, string>(b);
+            string b = Bytecode<string, string>.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text);
+            Bytecode<string, string>.Parse(b);
+        }
+
+        private void passwordBoxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ServerPassword sp = new ServerPassword();
+            sp.ShowDialog();
+        }
+
+        private void MainMenu_VisibleChanged(object sender, EventArgs e)
+        {
+            debugToolStripMenuItem.Visible = Debugging;
         }
     }
 }

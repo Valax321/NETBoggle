@@ -39,6 +39,12 @@
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpDicePositionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpBytecodeStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.d_ins1 = new System.Windows.Forms.ToolStripTextBox();
+            this.d_ins2 = new System.Windows.Forms.ToolStripTextBox();
+            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.interpretBytecodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.letter_r1c1 = new System.Windows.Forms.Label();
             this.boxBoard = new System.Windows.Forms.GroupBox();
             this.letter_r4c4 = new System.Windows.Forms.Label();
@@ -65,11 +71,6 @@
             this.lblTimeRemain = new System.Windows.Forms.Label();
             this.ServerTick = new System.Windows.Forms.Timer(this.components);
             this.labelReadyPlayers = new System.Windows.Forms.Label();
-            this.dumpBytecodeStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.d_ins1 = new System.Windows.Forms.ToolStripTextBox();
-            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.d_ins2 = new System.Windows.Forms.ToolStripTextBox();
-            this.interpretBytecodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.boxBoard.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -142,7 +143,8 @@
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dumpDicePositionsToolStripMenuItem,
-            this.dumpBytecodeStringToolStripMenuItem});
+            this.dumpBytecodeStringToolStripMenuItem,
+            this.passwordBoxToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -153,6 +155,50 @@
             this.dumpDicePositionsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.dumpDicePositionsToolStripMenuItem.Text = "Dump Dice Positions";
             this.dumpDicePositionsToolStripMenuItem.Click += new System.EventHandler(this.dumpDicePositionsToolStripMenuItem_Click);
+            // 
+            // dumpBytecodeStringToolStripMenuItem
+            // 
+            this.dumpBytecodeStringToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.d_ins1,
+            this.d_ins2,
+            this.dumpToolStripMenuItem,
+            this.interpretBytecodeToolStripMenuItem});
+            this.dumpBytecodeStringToolStripMenuItem.Name = "dumpBytecodeStringToolStripMenuItem";
+            this.dumpBytecodeStringToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.dumpBytecodeStringToolStripMenuItem.Text = "Dump Bytecode String";
+            // 
+            // d_ins1
+            // 
+            this.d_ins1.Name = "d_ins1";
+            this.d_ins1.Size = new System.Drawing.Size(100, 23);
+            this.d_ins1.Text = "Instruction 1";
+            // 
+            // d_ins2
+            // 
+            this.d_ins2.Name = "d_ins2";
+            this.d_ins2.Size = new System.Drawing.Size(100, 23);
+            this.d_ins2.Text = "Instruction 2";
+            // 
+            // dumpToolStripMenuItem
+            // 
+            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
+            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.dumpToolStripMenuItem.Text = "Dump Bytecode";
+            this.dumpToolStripMenuItem.Click += new System.EventHandler(this.dumpToolStripMenuItem_Click);
+            // 
+            // interpretBytecodeToolStripMenuItem
+            // 
+            this.interpretBytecodeToolStripMenuItem.Name = "interpretBytecodeToolStripMenuItem";
+            this.interpretBytecodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.interpretBytecodeToolStripMenuItem.Text = "Interpret Bytecode";
+            this.interpretBytecodeToolStripMenuItem.Click += new System.EventHandler(this.interpretBytecodeToolStripMenuItem_Click);
+            // 
+            // passwordBoxToolStripMenuItem
+            // 
+            this.passwordBoxToolStripMenuItem.Name = "passwordBoxToolStripMenuItem";
+            this.passwordBoxToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.passwordBoxToolStripMenuItem.Text = "Password Box";
+            this.passwordBoxToolStripMenuItem.Click += new System.EventHandler(this.passwordBoxToolStripMenuItem_Click);
             // 
             // letter_r1c1
             // 
@@ -446,43 +492,6 @@
             this.labelReadyPlayers.Text = "Ready";
             this.labelReadyPlayers.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // dumpBytecodeStringToolStripMenuItem
-            // 
-            this.dumpBytecodeStringToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.d_ins1,
-            this.d_ins2,
-            this.dumpToolStripMenuItem,
-            this.interpretBytecodeToolStripMenuItem});
-            this.dumpBytecodeStringToolStripMenuItem.Name = "dumpBytecodeStringToolStripMenuItem";
-            this.dumpBytecodeStringToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.dumpBytecodeStringToolStripMenuItem.Text = "Dump Bytecode String";
-            // 
-            // d_ins1
-            // 
-            this.d_ins1.Name = "d_ins1";
-            this.d_ins1.Size = new System.Drawing.Size(100, 23);
-            this.d_ins1.Text = "Instruction 1";
-            // 
-            // dumpToolStripMenuItem
-            // 
-            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
-            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.dumpToolStripMenuItem.Text = "Dump Bytecode";
-            this.dumpToolStripMenuItem.Click += new System.EventHandler(this.dumpToolStripMenuItem_Click);
-            // 
-            // d_ins2
-            // 
-            this.d_ins2.Name = "d_ins2";
-            this.d_ins2.Size = new System.Drawing.Size(100, 23);
-            this.d_ins2.Text = "Instruction 2";
-            // 
-            // interpretBytecodeToolStripMenuItem
-            // 
-            this.interpretBytecodeToolStripMenuItem.Name = "interpretBytecodeToolStripMenuItem";
-            this.interpretBytecodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.interpretBytecodeToolStripMenuItem.Text = "Interpret Bytecode";
-            this.interpretBytecodeToolStripMenuItem.Click += new System.EventHandler(this.interpretBytecodeToolStripMenuItem_Click);
-            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,6 +514,7 @@
             this.Text = "NET Boggle";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainMenu_FormClosed);
             this.Load += new System.EventHandler(this.MainMenu_Load);
+            this.VisibleChanged += new System.EventHandler(this.MainMenu_VisibleChanged);
             this.menuMain.ResumeLayout(false);
             this.menuMain.PerformLayout();
             this.boxBoard.ResumeLayout(false);
@@ -558,6 +568,7 @@
         private System.Windows.Forms.ToolStripTextBox d_ins2;
         private System.Windows.Forms.ToolStripMenuItem dumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem interpretBytecodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem passwordBoxToolStripMenuItem;
     }
 }
 

@@ -24,6 +24,11 @@ namespace NETBoggle.Networking
             Letters = letters;
         }
 
+        /// <summary>
+        /// Set the position of this die.
+        /// </summary>
+        /// <param name="x">the x coord to set.</param>
+        /// <param name="y">the y coord to set.</param>
         public void SetPosition(int x, int y)
         {
             Position = new Tuple<int, int>(x, y);
