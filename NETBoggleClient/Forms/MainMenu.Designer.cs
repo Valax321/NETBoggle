@@ -71,6 +71,7 @@
             this.lblTimeRemain = new System.Windows.Forms.Label();
             this.ServerTick = new System.Windows.Forms.Timer(this.components);
             this.labelReadyPlayers = new System.Windows.Forms.Label();
+            this.printIPAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.boxBoard.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -144,7 +145,8 @@
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dumpDicePositionsToolStripMenuItem,
             this.dumpBytecodeStringToolStripMenuItem,
-            this.passwordBoxToolStripMenuItem});
+            this.passwordBoxToolStripMenuItem,
+            this.printIPAddressToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -492,6 +494,13 @@
             this.labelReadyPlayers.Text = "Ready";
             this.labelReadyPlayers.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // printIPAddressToolStripMenuItem
+            // 
+            this.printIPAddressToolStripMenuItem.Name = "printIPAddressToolStripMenuItem";
+            this.printIPAddressToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.printIPAddressToolStripMenuItem.Text = "Print IP Address";
+            this.printIPAddressToolStripMenuItem.Click += new System.EventHandler(this.printIPAddressToolStripMenuItem_Click);
+            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -569,6 +578,7 @@
         private System.Windows.Forms.ToolStripMenuItem dumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem interpretBytecodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem passwordBoxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem printIPAddressToolStripMenuItem;
     }
 }
 

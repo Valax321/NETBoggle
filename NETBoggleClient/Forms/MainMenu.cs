@@ -17,6 +17,8 @@ namespace NETBoggle.Client
 
         bool Debugging = false;
 
+        NetworkTools.NetClient GameClient = new NetworkTools.NetClient();
+
         Player us; //Our player
 
         public MainMenu(string[] progargs)
@@ -175,6 +177,11 @@ namespace NETBoggle.Client
         private void MainMenu_VisibleChanged(object sender, EventArgs e)
         {
             debugToolStripMenuItem.Visible = Debugging;
+        }
+
+        private void printIPAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Debug.Log(NetworkTools.GetLocalIPAddress());
         }
     }
 }

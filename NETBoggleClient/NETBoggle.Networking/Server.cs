@@ -30,6 +30,8 @@ namespace NETBoggle.Networking
 
         IBoggleState CurrentState;
 
+        NetworkTools.NetServer GameServer = new NetworkTools.NetServer();
+
         /// <summary>
         /// Get current server state.
         /// </summary>
