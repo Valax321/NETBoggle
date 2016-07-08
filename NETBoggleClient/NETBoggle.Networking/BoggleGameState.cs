@@ -33,11 +33,19 @@ namespace NETBoggle.Networking
     /// </summary>
     public class BoggleWaitReady : IBoggleState
     {
+        /// <summary>
+        /// Nothing.
+        /// </summary>
         public void Construct(Server cur_s)
         {
 
         }
 
+        /// <summary>
+        /// Waits for player ready.
+        /// </summary>
+        /// <param name="cur_s"></param>
+        /// <returns></returns>
         public IBoggleState Handle(Server cur_s)
         {
             bool all_ready = true;
@@ -48,19 +56,24 @@ namespace NETBoggle.Networking
                 if (!p.Ready)
                 {
                     all_ready = false;
-                    p.SetElementEnabled("buttonReadyRound", true);
+                    //p.SetElementEnabled("buttonReadyRound", true);
+                    cur_s.NetMSG_SetFormState("buttonReadyRound", true, p);
                 }
                 else
                 {
-                    p.SetElementEnabled("buttonReadyRound", false);
+                    //p.SetElementEnabled("buttonReadyRound", false);
+                    cur_s.NetMSG_SetFormState("buttonReadyRound", false, p);
                     ready_count++;
                 }
             }
 
-            foreach (Player p in cur_s.Players)
-            {
-                p.SetElementText("labelReadyPlayers", string.Format("{0}/{1} Ready", ready_count, cur_s.Players.Count));
-            }
+            //foreach (Player p in cur_s.Players)
+            //{
+            //    //p.SetElementText("labelReadyPlayers", string.Format("{0}/{1} Ready", ready_count, cur_s.Players.Count));
+
+            //}
+
+            cur_s.NetMSG_SetFormText("labelReadyPlayers", string.Format("{0}/{1} Ready", ready_count, cur_s.Players.Count));
 
             if (!all_ready)
             {
@@ -83,14 +96,23 @@ namespace NETBoggle.Networking
     /// </summary>
     public class BogglePlay : IBoggleState
     {
+        /// <summary>
+        /// The current delta time for the server.
+        /// </summary>
         public float CurTime = Server.GameLength;
 
+        /// <summary>
+        /// Called when this dice is initialised.
+        /// </summary>
+        /// <param name="cur_s"></param>
         public void Construct(Server cur_s)
         {
-            foreach (Player p in cur_s.Players)
-            {
-                p.SetElementEnabled("wordsBox", true); //HACKHACKHACK
-            }
+            //foreach (Player p in cur_s.Players)
+            //{
+            //    //p.SetElementEnabled("wordsBox", true); //HACKHACKHACK
+            //}
+
+            cur_s.NetMSG_SetFormState("wordsBox", true);
 
             int row = 1;
             int col = 1;
@@ -100,10 +122,12 @@ namespace NETBoggle.Networking
             foreach (BoggleDie bd in cur_s.DiceLetters)
             {
                 string letter = bd.GetRandLetter();
-                foreach (Player p in cur_s.Players)
-                {
-                    p.SetElementText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter);
-                }
+                //foreach (Player p in cur_s.Players)
+                //{
+                //    p.SetElementText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter);
+                //}
+
+                cur_s.NetMSG_SetFormText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter);
 
                 if (row < 4)
                 {
@@ -117,16 +141,26 @@ namespace NETBoggle.Networking
             }
         }
 
+        /// <summary>
+        /// Called when this die ticks.
+        /// </summary>
+        /// <param name="cur_s"></param>
+        /// <returns></returns>
         public IBoggleState Handle(Server cur_s) //Fires every tick.
         {
             if (CurTime <= 0)
             {
-                foreach (Player p in cur_s.Players)
-                {
-                    p.SetElementEnabled("wordsBox", false);
-                    p.SetElementText("wordsBox.textBoxWordInput", string.Empty);
-                    p.SetElementText("wordsBox.textBoxWordHistory", string.Empty);
-                }
+                //foreach (Player p in cur_s.Players)
+                //{
+                //    p.SetElementEnabled("wordsBox", false);
+                //    p.SetElementText("wordsBox.textBoxWordInput", string.Empty);
+                //    p.SetElementText("wordsBox.textBoxWordHistory", string.Empty);
+                //}
+
+                cur_s.NetMSG_SetFormState("wordsBox", false);
+                cur_s.NetMSG_SetFormText("wordsBox.textBoxWordInput", string.Empty);
+                cur_s.NetMSG_SetFormText("wordsBox.textBoxWordHistory", string.Empty);
+
                 return new BoggleRoundEnd();
             }
             else
@@ -135,10 +169,12 @@ namespace NETBoggle.Networking
 
                 string DisplayTime = string.Format("{0}", (CurTime > 0 ? ((int)CurTime).ToString() : "0"));
 
-                foreach (Player p in cur_s.Players)
-                {
-                    p.SetElementText("lblTimeRemain", DisplayTime);
-                }
+                //foreach (Player p in cur_s.Players)
+                //{
+                //    p.SetElementText("lblTimeRemain", DisplayTime);
+                //}
+
+                cur_s.NetMSG_SetFormText("lblTimeRemain", DisplayTime);
 
                 return null;
             }
@@ -157,8 +193,15 @@ namespace NETBoggle.Networking
         /// </summary>
     public class BoggleRoundEnd : IBoggleState
     {
+        /// <summary>
+        /// Words shared by multiple players, disregarded.
+        /// </summary>
         public List<string> CommonWords = new List<string>();
 
+        /// <summary>
+        /// Called on init
+        /// </summary>
+        /// <param name="cur_s"></param>
         public void Construct(Server cur_s)
         {
             foreach (Player p in cur_s.Players)
@@ -212,10 +255,15 @@ namespace NETBoggle.Networking
                     }
                 }
 
-                MessageBox.Show(temp_score.ToString(), "Your Score This Round");
+                //MessageBox.Show(temp_score.ToString(), "Your Score This Round"); //ADD SOMETHING HERE!!!!!!!
             }
         }
 
+        /// <summary>
+        /// Nothing, returns new state.
+        /// </summary>
+        /// <param name="cur_s"></param>
+        /// <returns></returns>
         public IBoggleState Handle(Server cur_s)
         {
             return new BoggleWaitReady();

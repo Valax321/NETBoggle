@@ -14,6 +14,7 @@ namespace NETBoggle.Client
         [STAThread]
         static void Main(string[] args)
         {
+            //Networking.Bytecode.Bytecode.RegisterBytecode();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainMenu(args));

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace NETBoggle.Networking.Bytecode
 {
@@ -21,6 +20,10 @@ namespace NETBoggle.Networking.Bytecode
         /// When the player clicks ready, to the server
         /// </summary>
         READY = 1, 
+        /// <summary>
+        /// When the server aknowedges a ready click
+        /// </summary>
+        READY_RESPONSE = 100,
         /// <summary>
         /// When we shuffle the dice, to the clients
         /// </summary>
@@ -56,11 +59,15 @@ namespace NETBoggle.Networking.Bytecode
         /// <summary>
         /// Send our password to the server
         /// </summary>
-        PASSWORD_REPLY = 10, 
+        PASSWORD_REPLY = 10,        
+        /// <summary>
+        /// Set/init our player name.
+        /// </summary>
+        SET_NAME = 11, 
         /// <summary>
         /// Send a message to the client's debugger.
         /// </summary>
-        SERVER_CLIENT_MESSAGE = 254, 
+        SERVER_CLIENT_MESSAGE = 253, 
         /// <summary>
         /// UNUSED, error catching.
         /// </summary>
@@ -70,47 +77,180 @@ namespace NETBoggle.Networking.Bytecode
     /// <summary>
     /// Bytecode generator/interpreter
     /// </summary>
-    /// <typeparam name="T">Type for parameter 1</typeparam>
-    /// <typeparam name="T2">Type for parameter 2</typeparam>
-    public static class Bytecode<T, T2>
+    public static class Bytecode
     {       
         const char StringTerminator = (char)0x03; //ETX character (end of text), hex 0x03
 
-        /// <summary>
-        /// Bind a method with two parameters to be called on the given instruction. When the assigned BoggleInstruction is parsed by the bytecode interpreter, the specified method is called with the code's instructions as the parameters.
-        /// </summary>
-        /// <param name="binding">BoggleInstructions command to bind to.</param>
-        /// <param name="bindmethod">A two parameter method to bind to the specified boggle instruction</param>
-        public static void BindInstruction(BoggleInstructions binding, Action<T, T2> bindmethod)
+        static void BindInstruction(BoggleInstructions b, Action<string, string> method)
         {
             try
             {
-                BindingsList.Add(binding, bindmethod);
+                InstructionBindings.Add(b, method);
             }
             catch
             {
-                //Throw an error or something.
+                Debug.Log(string.Format("Failed to add binding {0} with method {1}", b, nameof(method)));
             }
         }
 
-        /// <summary>
-        /// Unbinds the specified instruction from any currently bound methods.
-        /// </summary>
-        /// <param name="ins">Instruction to unbind.</param>
-        public static void UnbindInstruction(BoggleInstructions ins)
+        static void BindInstruction(BoggleInstructions b, Action<string, string, Player> method)
         {
-            BindingsList.Remove(ins);
+            try
+            {
+                InstructionBindings_Server.Add(b, method);
+            }
+            catch
+            {
+                Debug.Log(string.Format("Failed to add binding {0} with method {1}", b, nameof(method)));
+            }
         }
 
-        static Dictionary<BoggleInstructions, Action<T, T2>> BindingsList = new Dictionary<BoggleInstructions,Action<T,T2>>();
+        static Bytecode()
+        {
+            BindInstruction(BoggleInstructions.CONNECT, Connect);
+            BindInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, ClientServerMessage);
+            BindInstruction(BoggleInstructions.SENDWORD, ReceiveWord);
+            BindInstruction(BoggleInstructions.FORMSTATE, FormSetVal);
+            BindInstruction(BoggleInstructions.FORMTEXT, FormSetText);
+            BindInstruction(BoggleInstructions.READY, ClientReady);
+            BindInstruction(BoggleInstructions.READY_RESPONSE, ServerRespondReady);
+            BindInstruction(BoggleInstructions.SET_NAME, ClientSetName);
+        }
+
+        static void Connect(string p1, string p2)
+        {
+            ConnectClient();
+        }
+
+        static void ClientServerMessage(string p1, string p2)
+        {
+            SendMessage(p1);
+        }
+
+        static void ClientReady(string p1, string p2, Player p)
+        {
+            ClientClickReady(p);
+        }
+
+        static void ServerRespondReady(string p1, string p2)
+        {
+            ServerRespondClickReady();
+        }
+
+        static void ClientSetName(string p1, string p2, Player p)
+        {
+            SetClientName(p1, p);
+        }
+
+        static void ReceiveWord(string word, string dumb, Player p)
+        {
+            ServerReveiveWord(word, p);
+        }
+
+        static void FormSetVal(string elem, string bState)
+        {
+            //Debug.Log(string.Format("Setting {0} to value {1}", elem, bState));
+            bool State = bState.ConvertToType<bool>();
+            ClientSetFormState(elem, State);
+        }
+
+        static void FormSetText(string elem, string text_val)
+        {
+            ClientSetFormText(elem, text_val);
+        }
+
+        #region Client Bindings
+
+        /// <summary>
+        /// Event handler for two parameter message
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        public delegate void Bytecode_TwoParam_EventHandler<T, T2>(T p1, T2 p2);
+
+        /// <summary>
+        /// Event handler for one parameter message
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="param"></param>
+        public delegate void Bytecode_OneParam_EventHandler<T>(T param);
+
+        /// <summary>
+        /// Event handler for no parameter message
+        /// </summary>
+        public delegate void BytecodeEventHandler();
+
+        #endregion
+
+        #region Server-Specific Bindings
+        /// <summary>
+        /// Server binding two param (see Bytecode_TwoParam_EventHandler)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T2"></typeparam>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="exec"></param>
+        public delegate void Server_TwoParam_EventHandler<T, T2>(T p1, T2 p2, Player exec);
+        /// <summary>
+        /// Server binding one param (see Bytecode_OneParam_EventHandler)
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="param"></param>
+        /// <param name="exec"></param>
+        public delegate void Server_OneParam_EventHandler<T>(T param, Player exec);
+        /// <summary>
+        /// Server binding no params (see <see cref="BytecodeEventHandler"/>)
+        /// </summary>
+        /// <param name="exec"></param>
+        public delegate void ServerEventHandler(Player exec);
+
+        #endregion
+
+        /// <summary>
+        /// Called when we connect to a client/server
+        /// </summary>
+        public static event BytecodeEventHandler ConnectClient;
+        /// <summary>
+        /// Called when we receive a text message from the server
+        /// </summary>
+        public static event Bytecode_OneParam_EventHandler<string> SendMessage;
+
+        public static event Server_OneParam_EventHandler<string> ServerReveiveWord;
+
+        public static event ServerEventHandler ClientClickReady;
+
+        public static event BytecodeEventHandler ServerRespondClickReady;
+
+        public static event Server_OneParam_EventHandler<string> SetClientName;
+
+        public static event Bytecode_TwoParam_EventHandler<string, bool> ClientSetFormState;
+
+        public static event Bytecode_TwoParam_EventHandler<string, string> ClientSetFormText;
+
+        static Dictionary<BoggleInstructions, Action<string, string>> InstructionBindings = new Dictionary<BoggleInstructions, Action<string, string>>();
+        static Dictionary<BoggleInstructions, Action<string, string, Player>> InstructionBindings_Server = new Dictionary<BoggleInstructions, Action<string, string, Player>>();
+
+        /// <summary>
+        /// Convert a string to the specified type
+        /// </summary>
+        /// <typeparam name="RT"></typeparam>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        static RT ConvertToType<RT>(this string param)
+        {
+            return (RT)TypeDescriptor.GetConverter(typeof(RT)).ConvertFromString(param);
+        }
 
         /// <summary>
         /// Paramater types must correspond to the types that the binding was declared with
         /// </summary>
         /// <param name="raw_instruction"></param>
-        public static void Parse(string raw_instruction)
+        public static void Parse(string raw_instruction, Player p = null)
         {
-            byte player_index = (byte)char.GetNumericValue(raw_instruction[0]); //WHY IS THAT NOT STRAIGHTFORWARD?
+            byte player_index = (byte)char.GetNumericValue(raw_instruction[0]); //deprecated??
             BoggleInstructions instruction = BoggleInstructions.INVALID;
             try
             {
@@ -118,39 +258,42 @@ namespace NETBoggle.Networking.Bytecode
             }
             catch (Exception e)
             {
-                Debug.Assert(false, e.ToString());
+                Debug.Log(e.ToString());
             }
-
-            T instruction1;
-            T2 instruction2;
-
+           
             string s2 = raw_instruction.Remove(0, 2);
+
+            string instruction1 = string.Empty;
+            string instruction2 = string.Empty;
 
             try
             {
-                instruction1 = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromString(s2.Split(new char[] { StringTerminator }, StringSplitOptions.RemoveEmptyEntries)[0]);
-                instruction2 = (T2)TypeDescriptor.GetConverter(typeof(T2)).ConvertFromString(s2.Split(new char[] { StringTerminator }, StringSplitOptions.RemoveEmptyEntries)[1]);
+                instruction1 = s2.Split(new char[] { StringTerminator })[0];
+                instruction2 = s2.Split(new char[] { StringTerminator })[1];
             }
 
             catch (Exception e)
             {
-                Debug.Assert(false, e.ToString());
+                System.Windows.Forms.MessageBox.Show(e.ToString(), "Exception Thrown", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 return;
             }
 
-            Console.WriteLine("Player: " + player_index);
-            Console.WriteLine("Instruction: " + Enum.GetName(typeof(BoggleInstructions), instruction));
-            Console.WriteLine("Parameter 1: " + instruction1);
-            Console.WriteLine("Paramater 2: " + instruction2);
-
             try
             {
-                BindingsList[instruction].Invoke(instruction1, instruction2);
+                if (p == null) //Null because we're a client and don't have a player ref.
+                {
+                    InstructionBindings[instruction].Invoke(instruction1, instruction2); //Client-side binding.
+                }
+                else
+                {
+                    InstructionBindings_Server[instruction].Invoke(instruction1, instruction2, p); //Server-side binding
+                }
             }
 
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                //Debug.Log(e.ToString());
+                Debug.Log(string.Format("Key not found: {0}", instruction.ToString()));
             }
         }        
 
@@ -169,6 +312,7 @@ namespace NETBoggle.Networking.Bytecode
             output += (char)ins; //needs to be char, or else we get the number.
             output += param1 + StringTerminator;
             output += param2 + StringTerminator;
+            output += '\n';
             return output;
         }
     }

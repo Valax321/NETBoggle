@@ -45,6 +45,7 @@
             this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.interpretBytecodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.passwordBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.printIPAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.letter_r1c1 = new System.Windows.Forms.Label();
             this.boxBoard = new System.Windows.Forms.GroupBox();
             this.letter_r4c4 = new System.Windows.Forms.Label();
@@ -71,7 +72,6 @@
             this.lblTimeRemain = new System.Windows.Forms.Label();
             this.ServerTick = new System.Windows.Forms.Timer(this.components);
             this.labelReadyPlayers = new System.Windows.Forms.Label();
-            this.printIPAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuMain.SuspendLayout();
             this.boxBoard.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -201,6 +201,13 @@
             this.passwordBoxToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.passwordBoxToolStripMenuItem.Text = "Password Box";
             this.passwordBoxToolStripMenuItem.Click += new System.EventHandler(this.passwordBoxToolStripMenuItem_Click);
+            // 
+            // printIPAddressToolStripMenuItem
+            // 
+            this.printIPAddressToolStripMenuItem.Name = "printIPAddressToolStripMenuItem";
+            this.printIPAddressToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.printIPAddressToolStripMenuItem.Text = "Print IP Address";
+            this.printIPAddressToolStripMenuItem.Click += new System.EventHandler(this.printIPAddressToolStripMenuItem_Click);
             // 
             // letter_r1c1
             // 
@@ -493,13 +500,6 @@
             this.labelReadyPlayers.TabIndex = 8;
             this.labelReadyPlayers.Text = "Ready";
             this.labelReadyPlayers.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // printIPAddressToolStripMenuItem
-            // 
-            this.printIPAddressToolStripMenuItem.Name = "printIPAddressToolStripMenuItem";
-            this.printIPAddressToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.printIPAddressToolStripMenuItem.Text = "Print IP Address";
-            this.printIPAddressToolStripMenuItem.Click += new System.EventHandler(this.printIPAddressToolStripMenuItem_Click);
             // 
             // MainMenu
             // 

@@ -13,12 +13,25 @@ namespace NETBoggle.Networking
     {
         const int NUM_LETTERS = 6;
 
+        /// <summary>
+        /// Potential letters for the die.
+        /// </summary>
         public string[] Letters = new string[NUM_LETTERS];
 
+        /// <summary>
+        /// Current letter from the random list.
+        /// </summary>
         public string CurrentLetter = string.Empty;
 
+        /// <summary>
+        /// The current 2d location for this die.
+        /// </summary>
         public Tuple<int, int> Position = new Tuple<int, int>(0, 0);
 
+        /// <summary>
+        /// Constructor for die.
+        /// </summary>
+        /// <param name="letters">Letters this die could potentially be.</param>
         public BoggleDie(string[] letters)
         {
             Letters = letters;
@@ -51,6 +64,9 @@ namespace NETBoggle.Networking
     /// </summary>
     public struct DiceWrapper
     {
+        /// <summary>
+        /// Die wrapper
+        /// </summary>
         public string[] Die0, Die1, Die2, Die3, Die4, Die5, Die6, Die7, Die8, Die9, Die10, Die11, Die12, Die13, Die14, Die15; 
     }
 }

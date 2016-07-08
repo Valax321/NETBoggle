@@ -33,25 +33,34 @@ namespace NETBoggle.Client
                     Debugging = true;
                 }
 
-                Bytecode<string, string>.BindInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, test_binding);
+                Bytecode.SendMessage += ClientReceiveServerMessage; //Bind to message receive event.
+                Bytecode.ClientSetFormState += Bytecode_ClientSetFormState; //Bind to form state change
+                Bytecode.ClientSetFormText += Bytecode_ClientSetFormText; //Bind to form text change
             }
         }
 
-        public void test_binding(string o, string t)
+        private void Bytecode_ClientSetFormText(string p1, string p2)
         {
-            Debug.Log(o);
-            Debug.Log(t);
+            Player.SetElementText(p1, p2, this);
+        }
+
+        private void Bytecode_ClientSetFormState(string p1, bool p2)
+        {
+            //Debug.Log(string.Format("Setting {0} to {1}", p1, p2));
+            Player.SetElementEnabled(p1, p2, this);
         }
 
         /// <summary>
         /// Attempts to connect a player to the server we own.
         /// </summary>
         /// <returns>If the player was able to connect.</returns>
+        [Obsolete]
         public bool ConnectPlayer()
         {
+            //GameClient.Init("192.168.1.1"); //Throws exception in RedCorona if the IP is not valid.
             try
             {
-                us = new Player() { PlayerName = PlayerSettings.Settings.PlayerName, ClientInterface = this };
+                us = new Player(0) { PlayerName = PlayerSettings.Settings.PlayerName, ClientInterface = this };
                 HostServer.ConnectPlayer(us); //Connect us to the server
                 return true;
             }
@@ -61,6 +70,33 @@ namespace NETBoggle.Client
                 MessageBox.Show(e.ToString(), "Error connecting to server", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
+        }
+
+        public void Connect(string ip, string password)
+        {
+            try
+            {
+                GameClient.Init(ip);
+                GameClient.Connect();
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+            }
+        }
+
+        void ClientSendMessage(BoggleInstructions b, string param1, string param2 = "")
+        {
+            if (GameClient != null)
+            {
+                GameClient.SendMessageToServer(b, param1, param2, 1);
+            }
+        }
+
+        //Receive
+        private void ClientReceiveServerMessage(string message)
+        {
+            Debug.Log(message);
         }
 
         /// <summary>
@@ -93,9 +129,14 @@ namespace NETBoggle.Client
         private void hostNewGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             HostServer = new Server(PlayerSettings.Settings.Host_ServerName, PlayerSettings.Settings.Host_ServerPassword);
+            HostServer.Init();
             Debug.Log(string.Format("Opened new server {0}", HostServer.ServerName));
-            ConnectPlayer();
+            MessageBox.Show(NetworkTools.GetLocalIPAddress());
+            GameClient.Init(string.Empty);
+            GameClient.Connect();
+            ClientSendMessage(BoggleInstructions.SET_NAME, PlayerSettings.Settings.PlayerName);
             StartServer();
+            //ConnectPlayer();
             ServerTick.Start();
             Text = string.Format("NET Boggle on {0}", HostServer.ServerName);
         }
@@ -132,18 +173,23 @@ namespace NETBoggle.Client
                     return;
                 }
 
-                HostServer.PlayerSendWord(us, textBoxWordInput.Text);
+                //HostServer.PlayerSendWord(us, textBoxWordInput.Text);
+                ClientSendMessage(BoggleInstructions.SENDWORD, textBoxWordInput.Text);
                 textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine;
                 textBoxWordInput.Text = string.Empty;
             }
         }
+
+        
+
+        #region Boring Boilerplate stuff
 
         /// <summary>
         /// Notify the server that we're ready to play.
         /// </summary>
         private void buttonReadyRound_Click(object sender, EventArgs e)
         {
-            us.Ready = true;
+            ClientSendMessage(BoggleInstructions.READY, string.Empty);
         }
 
         private void dumpDicePositionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -159,18 +205,18 @@ namespace NETBoggle.Client
 
         private void dumpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Debug.Log(Bytecode<string, string>.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text));
+            Debug.Log(Bytecode.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text));
         }
 
         private void interpretBytecodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string b = Bytecode<string, string>.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text);
-            Bytecode<string, string>.Parse(b);
+            string b = Bytecode.Generate(BoggleInstructions.SERVER_CLIENT_MESSAGE, d_ins1.Text, d_ins2.Text);
+            Bytecode.Parse(b);
         }
 
         private void passwordBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ServerPassword sp = new ServerPassword();
+            ServerPassword sp = new ServerPassword(this);
             sp.ShowDialog();
         }
 
@@ -183,5 +229,7 @@ namespace NETBoggle.Client
         {
             Debug.Log(NetworkTools.GetLocalIPAddress());
         }
+
+        #endregion
     }
 }
