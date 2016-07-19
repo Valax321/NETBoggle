@@ -26,6 +26,8 @@ NETBoggleClient/NETBoggle.Networking/bin
 
 !packages/*.dll
 
+Assets/
+
 # =========================
 # Operating System Files
 # =========================

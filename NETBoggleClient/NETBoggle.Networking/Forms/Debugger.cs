@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using NETBoggle.Networking;
 
-namespace NETBoggle.Client
+namespace NETBoggle.Networking
 {
     public partial class Debugger : Form
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Debugger()
         {
             InitializeComponent();
@@ -20,6 +22,11 @@ namespace NETBoggle.Client
             textboxDebugLog.Text += text + Environment.NewLine;
         }
 
+        /// <summary>
+        /// Update the log with our current state.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="e"></param>
         public void UpdateStateLog(IBoggleState state, EventArgs e)
         {
             labelServerState.Text = string.Format("Server State: {0}", state);
@@ -38,6 +45,9 @@ namespace NETBoggle.Client
     {
         static Debugger CurLog;
 
+        /// <summary>
+        ///Current Debugger, public access.
+        /// </summary>
         public static Debugger DebugLog
         {
             get

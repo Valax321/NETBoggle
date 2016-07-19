@@ -34,11 +34,20 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hostNewGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boxServerClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.joinGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpDicePositionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dumpBytecodeStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.d_ins1 = new System.Windows.Forms.ToolStripTextBox();
+            this.d_ins2 = new System.Windows.Forms.ToolStripTextBox();
+            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.interpretBytecodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.passwordBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.printIPAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.letter_r1c1 = new System.Windows.Forms.Label();
             this.boxBoard = new System.Windows.Forms.GroupBox();
             this.letter_r4c4 = new System.Windows.Forms.Label();
@@ -58,6 +67,9 @@
             this.letter_r1c2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dataGridScoreboard = new System.Windows.Forms.DataGridView();
+            this.playerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.scoreDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.playerContainerBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.wordsBox = new System.Windows.Forms.GroupBox();
             this.textBoxWordHistory = new System.Windows.Forms.TextBox();
             this.textBoxWordInput = new System.Windows.Forms.TextBox();
@@ -65,15 +77,12 @@
             this.lblTimeRemain = new System.Windows.Forms.Label();
             this.ServerTick = new System.Windows.Forms.Timer(this.components);
             this.labelReadyPlayers = new System.Windows.Forms.Label();
-            this.dumpBytecodeStringToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.d_ins1 = new System.Windows.Forms.ToolStripTextBox();
-            this.dumpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.d_ins2 = new System.Windows.Forms.ToolStripTextBox();
-            this.interpretBytecodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.menuMain.SuspendLayout();
             this.boxBoard.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridScoreboard)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playerContainerBindingSource)).BeginInit();
             this.wordsBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -102,26 +111,44 @@
             // 
             this.newGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.hostNewGameToolStripMenuItem,
+            this.boxServerClose,
+            this.toolStripSeparator1,
             this.joinGameToolStripMenuItem});
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
             this.newGameToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.newGameToolStripMenuItem.Text = "New Game";
+            this.newGameToolStripMenuItem.Text = "Game";
             // 
             // hostNewGameToolStripMenuItem
             // 
             this.hostNewGameToolStripMenuItem.Name = "hostNewGameToolStripMenuItem";
             this.hostNewGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.N)));
-            this.hostNewGameToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.hostNewGameToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.hostNewGameToolStripMenuItem.Text = "Host New Game";
             this.hostNewGameToolStripMenuItem.Click += new System.EventHandler(this.hostNewGameToolStripMenuItem_Click);
+            // 
+            // boxServerClose
+            // 
+            this.boxServerClose.Enabled = false;
+            this.boxServerClose.Name = "boxServerClose";
+            this.boxServerClose.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.D)));
+            this.boxServerClose.Size = new System.Drawing.Size(241, 22);
+            this.boxServerClose.Text = "Shut Down Server";
+            this.boxServerClose.Click += new System.EventHandler(this.boxServerClose_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(238, 6);
             // 
             // joinGameToolStripMenuItem
             // 
             this.joinGameToolStripMenuItem.Name = "joinGameToolStripMenuItem";
             this.joinGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.joinGameToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+            this.joinGameToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.joinGameToolStripMenuItem.Text = "Join Game";
+            this.joinGameToolStripMenuItem.Click += new System.EventHandler(this.joinGameToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -142,7 +169,9 @@
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dumpDicePositionsToolStripMenuItem,
-            this.dumpBytecodeStringToolStripMenuItem});
+            this.dumpBytecodeStringToolStripMenuItem,
+            this.passwordBoxToolStripMenuItem,
+            this.printIPAddressToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -153,6 +182,57 @@
             this.dumpDicePositionsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.dumpDicePositionsToolStripMenuItem.Text = "Dump Dice Positions";
             this.dumpDicePositionsToolStripMenuItem.Click += new System.EventHandler(this.dumpDicePositionsToolStripMenuItem_Click);
+            // 
+            // dumpBytecodeStringToolStripMenuItem
+            // 
+            this.dumpBytecodeStringToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.d_ins1,
+            this.d_ins2,
+            this.dumpToolStripMenuItem,
+            this.interpretBytecodeToolStripMenuItem});
+            this.dumpBytecodeStringToolStripMenuItem.Name = "dumpBytecodeStringToolStripMenuItem";
+            this.dumpBytecodeStringToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.dumpBytecodeStringToolStripMenuItem.Text = "Dump Bytecode String";
+            // 
+            // d_ins1
+            // 
+            this.d_ins1.Name = "d_ins1";
+            this.d_ins1.Size = new System.Drawing.Size(100, 23);
+            this.d_ins1.Text = "Instruction 1";
+            // 
+            // d_ins2
+            // 
+            this.d_ins2.Name = "d_ins2";
+            this.d_ins2.Size = new System.Drawing.Size(100, 23);
+            this.d_ins2.Text = "Instruction 2";
+            // 
+            // dumpToolStripMenuItem
+            // 
+            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
+            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.dumpToolStripMenuItem.Text = "Dump Bytecode";
+            this.dumpToolStripMenuItem.Click += new System.EventHandler(this.dumpToolStripMenuItem_Click);
+            // 
+            // interpretBytecodeToolStripMenuItem
+            // 
+            this.interpretBytecodeToolStripMenuItem.Name = "interpretBytecodeToolStripMenuItem";
+            this.interpretBytecodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.interpretBytecodeToolStripMenuItem.Text = "Interpret Bytecode";
+            this.interpretBytecodeToolStripMenuItem.Click += new System.EventHandler(this.interpretBytecodeToolStripMenuItem_Click);
+            // 
+            // passwordBoxToolStripMenuItem
+            // 
+            this.passwordBoxToolStripMenuItem.Name = "passwordBoxToolStripMenuItem";
+            this.passwordBoxToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.passwordBoxToolStripMenuItem.Text = "Password Box";
+            this.passwordBoxToolStripMenuItem.Click += new System.EventHandler(this.passwordBoxToolStripMenuItem_Click);
+            // 
+            // printIPAddressToolStripMenuItem
+            // 
+            this.printIPAddressToolStripMenuItem.Name = "printIPAddressToolStripMenuItem";
+            this.printIPAddressToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+            this.printIPAddressToolStripMenuItem.Text = "Print IP Address";
+            this.printIPAddressToolStripMenuItem.Click += new System.EventHandler(this.printIPAddressToolStripMenuItem_Click);
             // 
             // letter_r1c1
             // 
@@ -370,16 +450,43 @@
             this.dataGridScoreboard.AllowUserToAddRows = false;
             this.dataGridScoreboard.AllowUserToDeleteRows = false;
             this.dataGridScoreboard.AllowUserToResizeRows = false;
+            this.dataGridScoreboard.AutoGenerateColumns = false;
+            this.dataGridScoreboard.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridScoreboard.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridScoreboard.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridScoreboard.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.playerNameDataGridViewTextBoxColumn,
+            this.scoreDataGridViewTextBoxColumn});
+            this.dataGridScoreboard.DataSource = this.playerContainerBindingSource;
             this.dataGridScoreboard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridScoreboard.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridScoreboard.Location = new System.Drawing.Point(3, 16);
             this.dataGridScoreboard.Name = "dataGridScoreboard";
             this.dataGridScoreboard.ReadOnly = true;
+            this.dataGridScoreboard.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             this.dataGridScoreboard.RowHeadersVisible = false;
+            this.dataGridScoreboard.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridScoreboard.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dataGridScoreboard.Size = new System.Drawing.Size(194, 472);
             this.dataGridScoreboard.TabIndex = 0;
+            // 
+            // playerNameDataGridViewTextBoxColumn
+            // 
+            this.playerNameDataGridViewTextBoxColumn.DataPropertyName = "PlayerName";
+            this.playerNameDataGridViewTextBoxColumn.HeaderText = "PlayerName";
+            this.playerNameDataGridViewTextBoxColumn.Name = "playerNameDataGridViewTextBoxColumn";
+            this.playerNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // scoreDataGridViewTextBoxColumn
+            // 
+            this.scoreDataGridViewTextBoxColumn.DataPropertyName = "Score";
+            this.scoreDataGridViewTextBoxColumn.HeaderText = "Score";
+            this.scoreDataGridViewTextBoxColumn.Name = "scoreDataGridViewTextBoxColumn";
+            this.scoreDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // playerContainerBindingSource
+            // 
+            this.playerContainerBindingSource.DataSource = typeof(NETBoggle.Client.PlayerContainer);
             // 
             // wordsBox
             // 
@@ -395,12 +502,14 @@
             // 
             // textBoxWordHistory
             // 
+            this.textBoxWordHistory.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxWordHistory.Location = new System.Drawing.Point(7, 20);
             this.textBoxWordHistory.Multiline = true;
             this.textBoxWordHistory.Name = "textBoxWordHistory";
             this.textBoxWordHistory.ReadOnly = true;
             this.textBoxWordHistory.Size = new System.Drawing.Size(337, 229);
             this.textBoxWordHistory.TabIndex = 1;
+            this.toolTipMain.SetToolTip(this.textBoxWordHistory, "Words already typed appear here.");
             // 
             // textBoxWordInput
             // 
@@ -409,6 +518,7 @@
             this.textBoxWordInput.Name = "textBoxWordInput";
             this.textBoxWordInput.Size = new System.Drawing.Size(338, 20);
             this.textBoxWordInput.TabIndex = 0;
+            this.toolTipMain.SetToolTip(this.textBoxWordInput, "Type words here");
             this.textBoxWordInput.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxWordInput_KeyDown);
             // 
             // buttonReadyRound
@@ -446,43 +556,6 @@
             this.labelReadyPlayers.Text = "Ready";
             this.labelReadyPlayers.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // dumpBytecodeStringToolStripMenuItem
-            // 
-            this.dumpBytecodeStringToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.d_ins1,
-            this.d_ins2,
-            this.dumpToolStripMenuItem,
-            this.interpretBytecodeToolStripMenuItem});
-            this.dumpBytecodeStringToolStripMenuItem.Name = "dumpBytecodeStringToolStripMenuItem";
-            this.dumpBytecodeStringToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-            this.dumpBytecodeStringToolStripMenuItem.Text = "Dump Bytecode String";
-            // 
-            // d_ins1
-            // 
-            this.d_ins1.Name = "d_ins1";
-            this.d_ins1.Size = new System.Drawing.Size(100, 23);
-            this.d_ins1.Text = "Instruction 1";
-            // 
-            // dumpToolStripMenuItem
-            // 
-            this.dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
-            this.dumpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.dumpToolStripMenuItem.Text = "Dump Bytecode";
-            this.dumpToolStripMenuItem.Click += new System.EventHandler(this.dumpToolStripMenuItem_Click);
-            // 
-            // d_ins2
-            // 
-            this.d_ins2.Name = "d_ins2";
-            this.d_ins2.Size = new System.Drawing.Size(100, 23);
-            this.d_ins2.Text = "Instruction 2";
-            // 
-            // interpretBytecodeToolStripMenuItem
-            // 
-            this.interpretBytecodeToolStripMenuItem.Name = "interpretBytecodeToolStripMenuItem";
-            this.interpretBytecodeToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.interpretBytecodeToolStripMenuItem.Text = "Interpret Bytecode";
-            this.interpretBytecodeToolStripMenuItem.Click += new System.EventHandler(this.interpretBytecodeToolStripMenuItem_Click);
-            // 
             // MainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,11 +578,13 @@
             this.Text = "NET Boggle";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainMenu_FormClosed);
             this.Load += new System.EventHandler(this.MainMenu_Load);
+            this.VisibleChanged += new System.EventHandler(this.MainMenu_VisibleChanged);
             this.menuMain.ResumeLayout(false);
             this.menuMain.PerformLayout();
             this.boxBoard.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridScoreboard)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playerContainerBindingSource)).EndInit();
             this.wordsBox.ResumeLayout(false);
             this.wordsBox.PerformLayout();
             this.ResumeLayout(false);
@@ -558,6 +633,14 @@
         private System.Windows.Forms.ToolStripTextBox d_ins2;
         private System.Windows.Forms.ToolStripMenuItem dumpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem interpretBytecodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem passwordBoxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem printIPAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem boxServerClose;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn playerNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn scoreDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource playerContainerBindingSource;
+        private System.Windows.Forms.ToolTip toolTipMain;
     }
 }
 

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -14,13 +9,31 @@ namespace NETBoggle.Client
     /// </summary>
     public static class PlayerSettings
     {
+        /// <summary>
+        /// Information about a player
+        /// </summary>
         public struct PlayerInfo
         {
+            /// <summary>
+            /// The name we wantt to use
+            /// </summary>
             public string PlayerName;
 
+            /// <summary>
+            /// The name of our server
+            /// </summary>
             public string Host_ServerName;
+            /// <summary>
+            /// The password for our server
+            /// </summary>
             public string Host_ServerPassword;
 
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            /// <param name="name"></param>
+            /// <param name="s_name"></param>
+            /// <param name="s_pass"></param>
             public PlayerInfo(string name, string s_name, string s_pass)
             {
                 PlayerName = name;

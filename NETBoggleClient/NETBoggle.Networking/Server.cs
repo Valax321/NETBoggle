@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Sockets;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
-
-//Controls.find() to get form controls at runtime
-// PROBLEM SOLVED!!
+using NETBoggle.Networking.Bytecode;
 
 namespace NETBoggle.Networking
 {
@@ -25,19 +19,42 @@ namespace NETBoggle.Networking
         const string DICE_LOCATION = "dice.json";
         const string WORD_LIST_LOCATION = "words.lst";
 
-        public List<BoggleDie> DiceLetters = new List<BoggleDie>(16);
+        public List<BoggleDie> DiceLetters = new List<BoggleDie>(16); // List of dice
 
-        public List<string> WordList = new List<string>();
+        List<string> WordList = new List<string>();
 
-        public float DeltaTime;
+        public float DeltaTime; // Current server time.
 
         IBoggleState CurrentState;
 
+        NetworkTools.NetServer GameServer;
+
+        /// <summary>
+        /// Broadcast a message to all clients connected (ie. debug message, shutdown notify)
+        /// </summary>
+        /// <param name="ins"></param>
+        /// <param name="param1"></param>
+        /// <param name="param2"></param>
+        public void BroadcastInstruction(BoggleInstructions ins, string param1, string param2 = "")
+        {
+            if (GameServer != null)
+            {
+                GameServer.Server_Broadcast(Bytecode.Bytecode.Generate(ins, param1, param2));
+            }
+        }
+
+        /// <summary>
+        /// Get current server state.
+        /// </summary>
+        /// <returns></returns>
         public IBoggleState GetState()
         {
             return CurrentState;
         }
-    
+        
+        /// <summary>
+        /// Set dice positions to random values
+        /// </summary>
         public void RandomiseDicePositions()
         {
             DiceLetters.Shuffle();
@@ -55,8 +72,15 @@ namespace NETBoggle.Networking
         /// <param name="password">optional server password</param>
         public Server(string name, string password)
         {
+            GameServer = new NetworkTools.NetServer(this);
             ServerName = name;
             ServerPassword = password;
+
+            #region Bind to Events from Bytecode
+            Bytecode.Bytecode.ServerReveiveWord += PlayerSendWord;
+            Bytecode.Bytecode.ClientClickReady += Bytecode_ClientClickReady;
+            Bytecode.Bytecode.SetClientName += Bytecode_SetClientName;
+            #endregion
 
             string dice_string = "";
             try
@@ -78,7 +102,7 @@ namespace NETBoggle.Networking
             }
             catch (Exception e)
             {
-                Debug.Assert(false, e.ToString()); //Very super serious problem. Dice list/word list is missing.
+                Debug.Log(e.ToString()); //Very super serious problem. Dice list/word list is missing.
             }
 
             DiceWrapper dr = JsonConvert.DeserializeObject<DiceWrapper>(dice_string);
@@ -103,6 +127,60 @@ namespace NETBoggle.Networking
 #endregion
         }
 
+        private void Bytecode_SetClientName(string param, Player exec)
+        {
+            if (Players.Contains(exec))
+            {
+                string newname = param + "{0}";
+                string lastname = param;
+                int name_counter = 0;
+                foreach (Player name in Players)
+                {
+                    if (name.PlayerName == lastname) //Don't allow duplicate names, add a number to them.
+                    {
+                        lastname = string.Format(newname, name_counter);
+                        name_counter++;
+                    }
+                }
+
+                if (name_counter != 0)
+                {
+                    newname = string.Format(newname, name_counter);
+                }
+                else
+                {
+                    newname = param;
+                }
+
+                exec.PlayerName = newname;
+                //PlayerNames.Add(newname);
+                BroadcastInstruction(BoggleInstructions.PLAYER_JOINED, newname);
+            }
+        }
+
+        private void Bytecode_ClientClickReady(Player exec)
+        {
+            if (Players.Contains(exec))
+            {
+                exec.Ready = true;
+            }
+        }
+
+        public void PlayerConnected(Player joined)
+        {
+            foreach (Player p in Players)
+            {
+                if (p == joined) continue;
+                NetMSG_Send(joined, Bytecode.Bytecode.Generate(BoggleInstructions.PLAYER_JOINED, p.PlayerName));
+                NetMSG_Send(joined, Bytecode.Bytecode.Generate(BoggleInstructions.PLAYER_SCORE, p.PlayerName, p.Score.ToString()));
+            }
+        }
+
+        public void PlayerDisconnect(Player left)
+        {
+            BroadcastInstruction(BoggleInstructions.PLAYER_LEFT, left.PlayerName);
+        }
+
         /// <summary>
         /// Get the number of players on the server.
         /// </summary>
@@ -115,13 +193,27 @@ namespace NETBoggle.Networking
         }
 
         public string ServerName = "Boggle Server";
-        public string ServerPassword = string.Empty;
+        string ServerPassword = string.Empty;
 
-        public List<Player> Players = new List<Player>(PLAYER_CAP);
+        public List<Player> Players
+        {
+            get
+            {
+                if (GameServer != null)
+                {
+                    return GameServer.PlayerLookup.Values.ToList(); //Get the server-side list of clients
+                }
+                else
+                {
+                    return new List<Player>();
+                }
+            }
+        }
 
         /// <summary>
         /// Check to see if the server is full, and add us if it isn't
         /// </summary>
+        [Obsolete("Send a message instead")]
         public void ConnectPlayer(Player new_player)
         {
             try
@@ -131,20 +223,40 @@ namespace NETBoggle.Networking
 
             catch (Exception e)
             {
-                throw new ServerFullException(string.Format("Current server {0} is full", ServerName), e);
+                //throw new ServerFullException(string.Format("Current server {0} is full", ServerName), e);
             }
         }
 
+        /// <summary>
+        /// Start game
+        /// </summary>
         public void Start()
         {
             CurrentState = new BoggleWaitReady();
         }
-        
+
+        public void Init()
+        {
+            GameServer.StartServer();
+        }
+
+        public void Shutdown()
+        {
+            ShuttingDown = true;
+            NetMSG_SetFormState("buttonReadyRound", false);
+            NetMSG_SetFormState("wordsBox", false);
+            GameServer.CloseServer();
+        }
+
+        bool ShuttingDown = false;
+
         /// <summary>
         /// Process the server state
         /// </summary>
         public void Tick(float tick)
         {
+            if (ShuttingDown) return;
+            //BroadcastInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, string.Format("Hello world! Tick time: {0}", tick.ToString()));
             DeltaTime = tick;
             IBoggleState state = CurrentState.Handle(this);
             if (state != null)
@@ -155,18 +267,92 @@ namespace NETBoggle.Networking
         }
 
         /// <summary>
-        /// When a player types a word.
+        /// Check word validity
         /// </summary>
+        [Obsolete]
         public void PlayerSendWord(Player player, string word)
         {
             if (!player.TypedWords.Contains(word) && WordList.Contains(word) && CheckWordInPlay(word))
             {
-                Console.WriteLine("Actually valid");
+                Debug.Log("Actually valid");
                 player.TypedWords.Add(word);
             }
         }
 
-        //Thanks David!
+        /// <summary>
+        /// When we're sent a word.
+        /// </summary>
+        /// <param name="w"></param>
+        /// <param name="p"></param>
+        public void PlayerSendWord(string w, Player p)
+        {
+            if (!p.TypedWords.Contains(w) && WordList.Contains(w) && CheckWordInPlay(w))
+            {
+                Debug.Log("Actually valid");
+                p.TypedWords.Add(w);
+            }
+        }
+
+        public void NetMSG_SetFormState(string element, bool state, Player p)
+        {
+            NetMSG_Send(p, Bytecode.Bytecode.Generate(BoggleInstructions.FORMSTATE, element, state.ToString()));
+        }
+
+        public void NetMSG_SetFormState(string element, bool state)
+        {
+            NetMSG_Send(Bytecode.Bytecode.Generate(BoggleInstructions.FORMSTATE, element, state.ToString()));
+        }
+
+        public void NetMSG_SetFormText(string element, string text, Player p)
+        {
+            NetMSG_Send(p, Bytecode.Bytecode.Generate(BoggleInstructions.FORMTEXT, element, text));
+        }
+
+        /// <summary>
+        /// Broadcast version
+        /// </summary>
+        public void NetMSG_SetFormText(string element, string text)
+        {
+            NetMSG_Send(Bytecode.Bytecode.Generate(BoggleInstructions.FORMTEXT, element, text));
+        }
+
+        /// <summary>
+        /// Global broadcast
+        /// </summary>
+        void NetMSG_Send(string packet)
+        {
+            if (GameServer != null)
+            {
+                GameServer.Server_Broadcast(packet);
+            }
+        }
+
+        /// <summary>
+        /// Send to specific client.
+        /// </summary>
+        void NetMSG_Send(Player pl, string packet)
+        {
+            if (GameServer != null)
+            {
+                GameServer.Server_MessageClient(packet, pl);
+            }
+        }
+
+        /// <summary>
+        /// Exec a player-sent instruction.
+        /// </summary>
+        /// <param name="sender">Player class abstracted from server system.</param>
+        /// <param name="instruction"></param>
+        public void ProcessInstruction(Player sender, string instruction)
+        {
+            Bytecode.Bytecode.Parse(instruction, sender);
+        }
+
+        /// <summary>
+        /// Check if word is on board
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
         public bool CheckWordInPlay(string word)
         {
             word = word.ToUpper();
@@ -213,7 +399,7 @@ namespace NETBoggle.Networking
                         }
                     }
                 }
-                Console.WriteLine(string.Format("Letter: {0} Connected: {1}", currentChar, isConnected));
+                Debug.Log(string.Format("Letter: {0} Connected: {1}", currentChar, isConnected));
                 if (!isConnected)
                 {
                     break;
@@ -223,18 +409,161 @@ namespace NETBoggle.Networking
             return isConnected;
         }
 
-    }
+        public bool IsAttached(BoggleDie die, string letter)
+        {
+            foreach (BoggleDie around in DiceLetters)
+            {
+                if (around.Position == new Tuple<int, int>(die.Position.Item1 - 1, die.Position.Item2 - 1))
+                {
+                    if (around.CurrentLetter == letter)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
-    /// <summary>
-    /// Exception for when the server is full.
-    /// </summary>
-    public class ServerFullException : Exception
-    {
-        public ServerFullException() { }
+        //public bool CheckValidWord(string word)
+        //{
+        //    word = word.ToUpper();
 
-        public ServerFullException(string message) : base(message) { }
+        //    string letter = "";
+        //    string nextletter = "";
 
-        public ServerFullException(string message, Exception inner) : base(message, inner) { }
+        //    BoggleDie current = null;
+        //    BoggleDie last = null;
+
+        //    bool valid = false;
+
+        //    int iter = 0;
+
+        //    foreach (BoggleDie die in DiceLetters)
+        //    {
+        //        iter++;
+        //        last = current;
+        //        current = die;
+
+        //        letter = die.CurrentLetter;
+        //        try
+        //        {
+        //            nextletter = word[iter].ToString();
+        //        }
+        //        catch (IndexOutOfRangeException)
+        //        {
+        //            //No more letters
+        //            return valid;
+        //        }
+
+        //        // Iterate each, test if it is next to something
+        //        if (die.Position.Item1 - 1 > 0 && die.Position.Item2 - 1 > 0) // TOP LEFT
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 -1, die.Position.Item2 -1 ))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item2 - 1 > 0) // TOP
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1, die.Position.Item2 - 1))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item1 + 1 < 5 && die.Position.Item2 -1 > 0) //Top right
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 + 1, die.Position.Item2 - 1))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item1 + 1 < 5) // right
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 + 1, die.Position.Item2))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item1 + 1 < 5 && die.Position.Item2 + 1 < 5) // Bottom right
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 + 1, die.Position.Item2 + 1))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item2 + 1 < 5) // Bottom
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1, die.Position.Item2 + 1))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item1 - 1 > 0 && die.Position.Item2 + 1 < 5) //Bottom left
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 - 1, die.Position.Item2 + 1))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        if (die.Position.Item1 - 1 > 0) // left
+        //        {
+        //            foreach (BoggleDie around in DiceLetters)
+        //            {
+        //                if (around.Position == new Tuple<int, int>(die.Position.Item1 - 1, die.Position.Item2))
+        //                {
+        //                    if (around.CurrentLetter == letter)
+        //                    {
+        //                        valid = true;
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+
     }
 
     /// <summary>
@@ -256,24 +585,6 @@ namespace NETBoggle.Networking
                 list[n] = value;
             }
         }
-
-        //Thanks David!
-        public static Tuple<int, int> CoordinatesOf<T>(this T[,] matrix, T value)
-        {
-            int w = matrix.GetLength(0); // width
-            int h = matrix.GetLength(1); // height
-
-            for (int x = 0; x < w; ++x)
-            {
-                for (int y = 0; y < h; ++y)
-                {
-                    if (matrix[x, y].Equals(value))
-                        return Tuple.Create(x, y); // Returns the position of the label in the multidimentional array
-                }
-            }
-
-            return null;
-        }
     }
 
     /// <summary>
@@ -291,12 +602,19 @@ namespace NETBoggle.Networking
 
         public Form ClientInterface;
 
+        public int PlayerIndex;
+
+        public Player(int index)
+        {
+            PlayerIndex = index;
+        }
+
         /// <summary>
         /// Find a control on a form.
         /// </summary>
         /// <param name="element">Element name. Use periods (.) to look in child objects.</param>
         /// <returns>The control, if found. Else returns null.</returns>
-        Control FindControlRecursive(Form form, string element)
+        public static Control FindControlRecursive(Form form, string element)
         {
             string[] FormChildSearch = element.Split('.');
 
@@ -333,28 +651,33 @@ namespace NETBoggle.Networking
         /// </summary>
         /// <param name="label">the control to change</param>
         /// <param name="text_val">value to set</param>
-        public void SetElementText(string label, string text_val)
+        static public void SetElementText(string label, string text_val, Form f = null)
         {
-            if (ClientInterface != null)
+            if (f != null)
             {
-                Control c = FindControlRecursive(ClientInterface, label);
+                Control c = FindControlRecursive(f, label);
 
                 if (c != null)
                 {
-                    c.Text = text_val;
+                    if (c.InvokeRequired)
+                    {
+                        c.Invoke(new MethodInvoker(delegate { c.Text = text_val; }));
+                    }
+                    else
+                        c.Text = text_val;
                     return;
                 }
             }
 
-            MessageBox.Show("ClientInterface is null. Player is connected with no form!");            
+            //MessageBox.Show("ClientInterface is null. Player is connected with no form!");            
         }
 
         //UNUSED
-        public void SetTextBoxReadOnly(string element, bool read_only)
+        static public void SetTextBoxReadOnly(string element, bool read_only, Form f = null)
         {
-            if (ClientInterface != null)
+            if (f != null)
             {
-                Control[] Controls = ClientInterface.Controls.Find(element, false);
+                Control[] Controls = f.Controls.Find(element, false);
 
                 if (Controls.Length < 1)
                 {
@@ -364,13 +687,18 @@ namespace NETBoggle.Networking
                 foreach (Control c in Controls)
                 {
                     TextBox intermediate = (TextBox)c;
+                    if (c.InvokeRequired)
+                    {
+                        c.Invoke(new MethodInvoker(delegate { intermediate.ReadOnly = read_only; }));
+                    }
+                    else
                     intermediate.ReadOnly = read_only;
                 }
             }
 
             else
             {
-                MessageBox.Show("ClientInterface is null. Player is connected with no form!");
+                //MessageBox.Show("ClientInterface is null. Player is connected with no form!");
             }
         }
 
@@ -379,20 +707,25 @@ namespace NETBoggle.Networking
         /// </summary>
         /// <param name="element">Control to set</param>
         /// <param name="enabled">State to set</param>
-        public void SetElementEnabled(string element, bool enabled)
+        static public void SetElementEnabled(string element, bool enabled, Form f = null)
         {
-            if (ClientInterface != null)
+            if (f != null)
             {
-                Control c = FindControlRecursive(ClientInterface, element);
+                Control c = FindControlRecursive(f, element);
 
                 if (c != null)
                 {
-                    c.Enabled = enabled;
+                    if (c.InvokeRequired)
+                    {
+                        c.Invoke(new MethodInvoker(delegate { c.Enabled = enabled; }));
+                    }
+                    else
+                        c.Enabled = enabled;
                     return;
                 }
             }
 
-            MessageBox.Show("ClientInterface is null. Player is connected with no form!");
+           // MessageBox.Show("ClientInterface is null. Player is connected with no form!");
         }
     }
 }
