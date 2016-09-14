@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
-=======
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
->>>>>>> origin/master
 using System.Windows.Forms;
 
 namespace NETBoggle.Networking
@@ -76,11 +70,7 @@ namespace NETBoggle.Networking
 
             //}
 
-<<<<<<< HEAD
             cur_s.NetMSG_SetFormText("labelReadyPlayers", string.Format("{0}/{1} Ready", ready_count, cur_s.Players.Count)); // Tell players how many people are ready
-=======
-            cur_s.NetMSG_SetFormText("labelReadyPlayers", string.Format("{0}/{1} Ready", ready_count, cur_s.Players.Count));
->>>>>>> origin/master
 
             if (!all_ready)
             {
@@ -89,17 +79,10 @@ namespace NETBoggle.Networking
 
             foreach (Player p in cur_s.Players)
             {
-<<<<<<< HEAD
                 p.Ready = false; //Clear the ready flag
             }
 
             return new BogglePlay(); //Move onto gameplay
-=======
-                p.Ready = false;
-            }
-
-            return new BogglePlay();
->>>>>>> origin/master
         }
     }
 
@@ -121,15 +104,7 @@ namespace NETBoggle.Networking
         /// <param name="cur_s"></param>
         public void Construct(Server cur_s)
         {
-<<<<<<< HEAD
             cur_s.NetMSG_SetFormText("wordsBox.textBoxWordHistory", string.Empty); //Clear word history for the last round
-=======
-            //foreach (Player p in cur_s.Players)
-            //{
-            //    //p.SetElementEnabled("wordsBox", true); //HACKHACKHACK
-            //}
-
->>>>>>> origin/master
             cur_s.NetMSG_SetFormState("wordsBox", true);
 
             int row = 1;
@@ -145,11 +120,7 @@ namespace NETBoggle.Networking
                 //    p.SetElementText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter);
                 //}
 
-<<<<<<< HEAD
                 cur_s.NetMSG_SetFormText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter); // Look up each letter on the game form.
-=======
-                cur_s.NetMSG_SetFormText(string.Format("boxBoard.letter_r{0}c{1}", row, col), letter);
->>>>>>> origin/master
 
                 if (row < 4)
                 {
@@ -181,24 +152,14 @@ namespace NETBoggle.Networking
 
                 cur_s.NetMSG_SetFormState("wordsBox", false);
                 cur_s.NetMSG_SetFormText("wordsBox.textBoxWordInput", string.Empty);
-<<<<<<< HEAD
 
                 return new BoggleRoundEnd(); //Move on to scoring
-=======
-                cur_s.NetMSG_SetFormText("wordsBox.textBoxWordHistory", string.Empty);
-
-                return new BoggleRoundEnd();
->>>>>>> origin/master
             }
             else
             {
                 CurTime -= cur_s.DeltaTime;
 
-<<<<<<< HEAD
                 string DisplayTime = string.Format("{0}", (CurTime > 0 ? ((int)CurTime).ToString() : "0")); //Update the player's timer
-=======
-                string DisplayTime = string.Format("{0}", (CurTime > 0 ? ((int)CurTime).ToString() : "0"));
->>>>>>> origin/master
 
                 //foreach (Player p in cur_s.Players)
                 //{
@@ -228,10 +189,7 @@ namespace NETBoggle.Networking
         /// Words shared by multiple players, disregarded.
         /// </summary>
         public List<string> CommonWords = new List<string>();
-<<<<<<< HEAD
         Dictionary<string, uint> CWords = new Dictionary<string, uint>();
-=======
->>>>>>> origin/master
 
         /// <summary>
         /// Called on init
@@ -239,7 +197,6 @@ namespace NETBoggle.Networking
         /// <param name="cur_s"></param>
         public void Construct(Server cur_s)
         {
-<<<<<<< HEAD
             //!!!!!!!!TODO: Fix common word detection !!!!!
             foreach (Player p in cur_s.Players)
             {
@@ -276,20 +233,6 @@ namespace NETBoggle.Networking
                 catch (Exception e)
                 {
                     MessageBox.Show(e.ToString(), "Word error");
-=======
-            foreach (Player p in cur_s.Players)
-            {
-                foreach (string s in p.TypedWords)
-                {
-                    if (!CommonWords.Contains(s))
-                    {
-                        CommonWords.Add(s); //Add it to the register of common words
-                    }
-                    else
-                    {
-                        p.TypedWords.Remove(s); //Duplicated word, get rid of it.
-                    }
->>>>>>> origin/master
                 }
             }
 
@@ -297,7 +240,6 @@ namespace NETBoggle.Networking
             {
                 int temp_score = 0;
 
-<<<<<<< HEAD
                 foreach (string common in CWords.Keys)
                 {
                     if (CWords[common] == 0) continue;
@@ -311,8 +253,6 @@ namespace NETBoggle.Networking
                     }
                 }
 
-=======
->>>>>>> origin/master
                 // Problems here:
                 // Score can get unreasonably large after quite a few rounds (e.g. 19 rather than 5).
 
@@ -343,11 +283,8 @@ namespace NETBoggle.Networking
                         p.Score += 11;
                         temp_score += 11;
                     }
-<<<<<<< HEAD
 
                     cur_s.BroadcastInstruction(Bytecode.BoggleInstructions.PLAYER_SCORE, p.PlayerName ,p.Score.ToString()); //Tell the players the new scores.
-=======
->>>>>>> origin/master
                 }
 
                 //MessageBox.Show(temp_score.ToString(), "Your Score This Round"); //ADD SOMETHING HERE!!!!!!!

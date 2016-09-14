@@ -3,18 +3,12 @@ using System.Linq;
 using System.Windows.Forms;
 using NETBoggle.Networking;
 using NETBoggle.Networking.Bytecode;
-<<<<<<< HEAD
 using System.ComponentModel;
 
 namespace NETBoggle.Client
 {
 
 
-=======
-
-namespace NETBoggle.Client
-{
->>>>>>> origin/master
     /// <summary>
     /// Form for the main gameplay of Boggle.
     /// </summary>
@@ -25,13 +19,6 @@ namespace NETBoggle.Client
         Server HostServer;
 
         bool Debugging = false;
-<<<<<<< HEAD
-=======
-
-        NetworkTools.NetClient GameClient = new NetworkTools.NetClient();
-
-        Player us; //Our player
->>>>>>> origin/master
 
         NetworkTools.NetClient GameClient = new NetworkTools.NetClient();
 
@@ -53,7 +40,6 @@ namespace NETBoggle.Client
                 {
                     Debug.SetupLog(new Debugger());
                     Debugging = true;
-<<<<<<< HEAD
                 }               
             }
 
@@ -116,25 +102,12 @@ namespace NETBoggle.Client
         }
 
         // Bound method for ClientSetFormText event
-=======
-                }
-
-                Bytecode.SendMessage += ClientReceiveServerMessage; //Bind to message receive event.
-                Bytecode.ClientSetFormState += Bytecode_ClientSetFormState; //Bind to form state change
-                Bytecode.ClientSetFormText += Bytecode_ClientSetFormText; //Bind to form text change
-            }
-        }
-
->>>>>>> origin/master
         private void Bytecode_ClientSetFormText(string p1, string p2)
         {
             Player.SetElementText(p1, p2, this);
         }
 
-<<<<<<< HEAD
         // Bound method for ClientSetFormState event
-=======
->>>>>>> origin/master
         private void Bytecode_ClientSetFormState(string p1, bool p2)
         {
             //Debug.Log(string.Format("Setting {0} to {1}", p1, p2));
@@ -142,24 +115,14 @@ namespace NETBoggle.Client
         }
 
         /// <summary>
-<<<<<<< HEAD
         /// Connect to a server (given by IP address) and send our name with it. Logs an error if we can't connect.
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="password"></param>
         public void Connect(string ip, string password)
-=======
-        /// Attempts to connect a player to the server we own.
-        /// </summary>
-        /// <returns>If the player was able to connect.</returns>
-        [Obsolete]
-        public bool ConnectPlayer()
->>>>>>> origin/master
         {
-            //GameClient.Init("192.168.1.1"); //Throws exception in RedCorona if the IP is not valid.
             try
             {
-<<<<<<< HEAD
                 GameClient.Init(ip);
                 GameClient.Connect();
                 ClientSendMessage(BoggleInstructions.SET_NAME, PlayerSettings.Settings.PlayerName);
@@ -167,11 +130,6 @@ namespace NETBoggle.Client
             catch (Exception e)
             {
                 Debug.Log(e.ToString());
-=======
-                us = new Player(0) { PlayerName = PlayerSettings.Settings.PlayerName, ClientInterface = this };
-                HostServer.ConnectPlayer(us); //Connect us to the server
-                return true;
->>>>>>> origin/master
             }
         }
 
@@ -184,32 +142,7 @@ namespace NETBoggle.Client
             }
         }
 
-<<<<<<< HEAD
         //Receive log from server
-=======
-        public void Connect(string ip, string password)
-        {
-            try
-            {
-                GameClient.Init(ip);
-                GameClient.Connect();
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.ToString());
-            }
-        }
-
-        void ClientSendMessage(BoggleInstructions b, string param1, string param2 = "")
-        {
-            if (GameClient != null)
-            {
-                GameClient.SendMessageToServer(b, param1, param2, 1);
-            }
-        }
-
-        //Receive
->>>>>>> origin/master
         private void ClientReceiveServerMessage(string message)
         {
             Debug.Log(message);
@@ -246,11 +179,8 @@ namespace NETBoggle.Client
             }
         }
 
-<<<<<<< HEAD
         
 
-=======
->>>>>>> origin/master
         /// <summary>
         /// This starts the server when we click File->New Server->Host New Server.
         /// </summary>
@@ -261,14 +191,8 @@ namespace NETBoggle.Client
             HostServer.Init();
             Debug.Log(string.Format("Opened new server {0}", HostServer.ServerName));
             MessageBox.Show(NetworkTools.GetLocalIPAddress());
-<<<<<<< HEAD
             Connect(string.Empty, PlayerSettings.Settings.Host_ServerPassword);
             //ClientSendMessage(BoggleInstructions.SET_NAME, PlayerSettings.Settings.Host_ServerPassword);
-=======
-            GameClient.Init(string.Empty);
-            GameClient.Connect();
-            ClientSendMessage(BoggleInstructions.SET_NAME, PlayerSettings.Settings.PlayerName);
->>>>>>> origin/master
             StartServer();
             //ConnectPlayer();
             ServerTick.Start();
@@ -283,12 +207,6 @@ namespace NETBoggle.Client
             if (HostServer != null)
             {
                 HostServer.Tick(0.1f);
-<<<<<<< HEAD
-=======
-                dataGridScoreboard.DataSource = null;
-                dataGridScoreboard.DataSource = HostServer.Players;
-                dataGridScoreboard.Update();
->>>>>>> origin/master
             }
         }
 
@@ -305,14 +223,8 @@ namespace NETBoggle.Client
                     return;
                 }
 
-<<<<<<< HEAD
                 ClientSendMessage(BoggleInstructions.SENDWORD, textBoxWordInput.Text); //Send message
                 textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine; //Clear the box
-=======
-                //HostServer.PlayerSendWord(us, textBoxWordInput.Text);
-                ClientSendMessage(BoggleInstructions.SENDWORD, textBoxWordInput.Text);
-                textBoxWordHistory.Text += textBoxWordInput.Text + Environment.NewLine;
->>>>>>> origin/master
                 textBoxWordInput.Text = string.Empty;
             }
         }
@@ -329,14 +241,11 @@ namespace NETBoggle.Client
             ClientSendMessage(BoggleInstructions.READY, string.Empty);
         }
 
-<<<<<<< HEAD
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             options.ShowDialog();
         }
 
-=======
->>>>>>> origin/master
         private void dumpDicePositionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (HostServer != null)
@@ -375,7 +284,6 @@ namespace NETBoggle.Client
             Debug.Log(NetworkTools.GetLocalIPAddress());
         }
 
-<<<<<<< HEAD
         private void boxServerClose_Click(object sender, EventArgs e)
         {
             Server_Shutdown();
@@ -389,9 +297,6 @@ namespace NETBoggle.Client
         #endregion
 
        
-=======
-        #endregion
->>>>>>> origin/master
     }
 
     /// <summary>
