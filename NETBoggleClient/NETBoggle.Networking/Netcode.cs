@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Text;
+=======
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+>>>>>>> origin/master
 using NETBoggle.Networking.Bytecode;
 using System.Net;
 using System.Net.Sockets;
@@ -8,6 +14,7 @@ using RedCorona.Net;
 
 namespace NETBoggle.Networking
 {
+<<<<<<< HEAD
     /// <summary>
     /// Parent class for both Network types
     /// </summary>
@@ -21,15 +28,24 @@ namespace NETBoggle.Networking
         /// <summary>
         /// A client for the client/server system.
         /// </summary>
+=======
+    public static class NetworkTools
+    {
+        public const int PORT = 7654;
+
+>>>>>>> origin/master
         public class NetClient
         {
             ClientInfo Client;
             Socket sock;
 
+<<<<<<< HEAD
             /// <summary>
             /// Initialises the client
             /// </summary>
             /// <param name="connectionip">Ip to connect to</param>
+=======
+>>>>>>> origin/master
             public void Init(string connectionip)
             {
                 Socket sock = Sockets.CreateTCPSocket(connectionip, PORT);
@@ -50,15 +66,19 @@ namespace NETBoggle.Networking
                 Bytecode.Bytecode.Parse(inte); //Do it here since the server doesn't exist on our end. This is garuanteed to execute correctly.
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Join the server
             /// </summary>
+=======
+>>>>>>> origin/master
             public void Connect()
             {
                 if (Client == null) return;
                 Client.BeginReceive();
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Send a message to the server
             /// </summary>
@@ -66,6 +86,8 @@ namespace NETBoggle.Networking
             /// <param name="param1"></param>
             /// <param name="param2"></param>
             /// <param name="player_index"></param>
+=======
+>>>>>>> origin/master
             public void SendMessageToServer(BoggleInstructions instruction, string param1, string param2, int player_index)
             {
                 string ins = Bytecode.Bytecode.Generate(instruction, param1, param2, player_index);
@@ -77,9 +99,12 @@ namespace NETBoggle.Networking
 
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// The server for the client/server system.
         /// </summary>
+=======
+>>>>>>> origin/master
         public class NetServer
         {
             //TcpListener Server;
@@ -93,6 +118,7 @@ namespace NETBoggle.Networking
             Server OurServer;
             RedCorona.Net.Server Server_;
             ClientInfo Client_;
+<<<<<<< HEAD
             /// <summary>
             /// Player referenced by their IDs
             /// </summary>
@@ -106,20 +132,29 @@ namespace NETBoggle.Networking
             /// CTOR
             /// </summary>
             /// <param name="owner"></param>
+=======
+            public Dictionary<int, Player> PlayerLookup;
+            public Dictionary<int, ClientInfo> ClientTable = new Dictionary<int, ClientInfo>();
+
+>>>>>>> origin/master
             public NetServer(Server owner)
             {
                 OurServer = owner;
                 PlayerLookup = new Dictionary<int, Player>(Server.PLAYER_CAP);
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Start a new server
             /// </summary>
+=======
+>>>>>>> origin/master
             public void StartServer()
             {
                 Server_ = new RedCorona.Net.Server(PORT, new ClientEvent(ClientConnect));
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Shut down the server
             /// </summary>
@@ -135,11 +170,14 @@ namespace NETBoggle.Networking
             /// <param name="s"></param>
             /// <param name="new_client"></param>
             /// <returns></returns>
+=======
+>>>>>>> origin/master
             public bool ClientConnect(RedCorona.Net.Server s, ClientInfo new_client)
             {
                 new_client.Delimiter = "\n";
                 new_client.OnRead += ReadClient; //Read client messages
                 new_client.OnClose += New_client_OnClose;
+<<<<<<< HEAD
                 Player np = new Player(new_client.ID);
                 PlayerLookup.Add(new_client.ID, np); // Add a client to our listing.
                 ClientTable.Add(new_client.ID, new_client);
@@ -155,16 +193,28 @@ namespace NETBoggle.Networking
             {
                 Debug.Log("Player disconnected");
                 OurServer.PlayerDisconnect(PlayerLookup[ci.ID]);
+=======
+                PlayerLookup.Add(new_client.ID, new Player(new_client.ID)); // Add a client to our listing.
+                ClientTable.Add(new_client.ID, new_client);
+                return true;
+            }
+
+            private void New_client_OnClose(ClientInfo ci)
+            {
+>>>>>>> origin/master
                 PlayerLookup.Remove(ci.ID); //Remove them.
                 ClientTable.Remove(ci.ID);
                 ci.OnRead -= ReadClient; //Unbind the events or else MEMORY LEAK (won't be GC'd)
                 ci.OnClose -= New_client_OnClose;
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Send a message to all players.
             /// </summary>
             /// <param name="msg"></param>
+=======
+>>>>>>> origin/master
             public void Server_Broadcast(string msg)
             {
                 try
@@ -177,11 +227,14 @@ namespace NETBoggle.Networking
                 }
             }
 
+<<<<<<< HEAD
             /// <summary>
             /// Send a message to a specific player
             /// </summary>
             /// <param name="msg"></param>
             /// <param name="p"></param>
+=======
+>>>>>>> origin/master
             public void Server_MessageClient(string msg, Player p)
             {
                 try

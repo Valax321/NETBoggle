@@ -67,9 +67,12 @@
             this.letter_r1c2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dataGridScoreboard = new System.Windows.Forms.DataGridView();
+<<<<<<< HEAD
             this.playerNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.scoreDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.playerContainerBindingSource = new System.Windows.Forms.BindingSource(this.components);
+=======
+>>>>>>> origin/master
             this.wordsBox = new System.Windows.Forms.GroupBox();
             this.textBoxWordHistory = new System.Windows.Forms.TextBox();
             this.textBoxWordInput = new System.Windows.Forms.TextBox();
@@ -82,7 +85,10 @@
             this.boxBoard.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridScoreboard)).BeginInit();
+<<<<<<< HEAD
             ((System.ComponentModel.ISupportInitialize)(this.playerContainerBindingSource)).BeginInit();
+=======
+>>>>>>> origin/master
             this.wordsBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -470,6 +476,7 @@
             this.dataGridScoreboard.Size = new System.Drawing.Size(194, 472);
             this.dataGridScoreboard.TabIndex = 0;
             // 
+<<<<<<< HEAD
             // playerNameDataGridViewTextBoxColumn
             // 
             this.playerNameDataGridViewTextBoxColumn.DataPropertyName = "PlayerName";
@@ -488,6 +495,8 @@
             // 
             this.playerContainerBindingSource.DataSource = typeof(NETBoggle.Client.PlayerContainer);
             // 
+=======
+>>>>>>> origin/master
             // wordsBox
             // 
             this.wordsBox.Controls.Add(this.textBoxWordHistory);
@@ -584,7 +593,10 @@
             this.boxBoard.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridScoreboard)).EndInit();
+<<<<<<< HEAD
             ((System.ComponentModel.ISupportInitialize)(this.playerContainerBindingSource)).EndInit();
+=======
+>>>>>>> origin/master
             this.wordsBox.ResumeLayout(false);
             this.wordsBox.PerformLayout();
             this.ResumeLayout(false);
@@ -635,12 +647,15 @@
         private System.Windows.Forms.ToolStripMenuItem interpretBytecodeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem passwordBoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem printIPAddressToolStripMenuItem;
+<<<<<<< HEAD
         private System.Windows.Forms.ToolStripMenuItem boxServerClose;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.DataGridViewTextBoxColumn playerNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn scoreDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource playerContainerBindingSource;
         private System.Windows.Forms.ToolTip toolTipMain;
+=======
+>>>>>>> origin/master
     }
 }
 

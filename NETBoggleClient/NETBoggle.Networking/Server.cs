@@ -1,9 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+<<<<<<< HEAD
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using System.IO;
+=======
+using System.Text;
+using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+using System.IO;
+using RedCorona.Net;
+>>>>>>> origin/master
 using NETBoggle.Networking.Bytecode;
 
 namespace NETBoggle.Networking
@@ -19,7 +29,13 @@ namespace NETBoggle.Networking
         const string DICE_LOCATION = "dice.json";
         const string WORD_LIST_LOCATION = "words.lst";
 
+<<<<<<< HEAD
         public List<BoggleDie> DiceLetters = new List<BoggleDie>(16); // List of dice
+=======
+        public List<BoggleDie> DiceLetters = new List<BoggleDie>(16);
+
+        List<string> WordList = new List<string>();
+>>>>>>> origin/master
 
         List<string> WordList = new List<string>();
 
@@ -131,6 +147,7 @@ namespace NETBoggle.Networking
         {
             if (Players.Contains(exec))
             {
+<<<<<<< HEAD
                 string newname = param + "{0}";
                 string lastname = param;
                 int name_counter = 0;
@@ -155,6 +172,9 @@ namespace NETBoggle.Networking
                 exec.PlayerName = newname;
                 //PlayerNames.Add(newname);
                 BroadcastInstruction(BoggleInstructions.PLAYER_JOINED, newname);
+=======
+                exec.PlayerName = param;
+>>>>>>> origin/master
             }
         }
 
@@ -166,6 +186,7 @@ namespace NETBoggle.Networking
             }
         }
 
+<<<<<<< HEAD
         public void PlayerConnected(Player joined)
         {
             foreach (Player p in Players)
@@ -181,6 +202,8 @@ namespace NETBoggle.Networking
             BroadcastInstruction(BoggleInstructions.PLAYER_LEFT, left.PlayerName);
         }
 
+=======
+>>>>>>> origin/master
         /// <summary>
         /// Get the number of players on the server.
         /// </summary>
@@ -233,6 +256,7 @@ namespace NETBoggle.Networking
         public void Start()
         {
             CurrentState = new BoggleWaitReady();
+<<<<<<< HEAD
         }
 
         public void Init()
@@ -250,12 +274,24 @@ namespace NETBoggle.Networking
 
         bool ShuttingDown = false;
 
+=======
+        }
+
+        public void Init()
+        {
+            GameServer.StartServer();
+        }
+        
+>>>>>>> origin/master
         /// <summary>
         /// Process the server state
         /// </summary>
         public void Tick(float tick)
         {
+<<<<<<< HEAD
             if (ShuttingDown) return;
+=======
+>>>>>>> origin/master
             //BroadcastInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, string.Format("Hello world! Tick time: {0}", tick.ToString()));
             DeltaTime = tick;
             IBoggleState state = CurrentState.Handle(this);
@@ -297,6 +333,7 @@ namespace NETBoggle.Networking
         {
             NetMSG_Send(p, Bytecode.Bytecode.Generate(BoggleInstructions.FORMSTATE, element, state.ToString()));
         }
+<<<<<<< HEAD
 
         public void NetMSG_SetFormState(string element, bool state)
         {
@@ -563,7 +600,147 @@ namespace NETBoggle.Networking
         //    }
         //}
 
+=======
 
+        public void NetMSG_SetFormState(string element, bool state)
+        {
+            NetMSG_Send(Bytecode.Bytecode.Generate(BoggleInstructions.FORMSTATE, element, state.ToString()));
+        }
+
+        public void NetMSG_SetFormText(string element, string text, Player p)
+        {
+            NetMSG_Send(p, Bytecode.Bytecode.Generate(BoggleInstructions.FORMTEXT, element, text));
+        }
+
+        /// <summary>
+        /// Broadcast version
+        /// </summary>
+        public void NetMSG_SetFormText(string element, string text)
+        {
+            NetMSG_Send(Bytecode.Bytecode.Generate(BoggleInstructions.FORMTEXT, element, text));
+        }
+
+        /// <summary>
+        /// Global broadcast
+        /// </summary>
+        void NetMSG_Send(string packet)
+        {
+            if (GameServer != null)
+            {
+                GameServer.Server_Broadcast(packet);
+            }
+        }
+
+        /// <summary>
+        /// Send to specific client.
+        /// </summary>
+        void NetMSG_Send(Player pl, string packet)
+        {
+            if (GameServer != null)
+            {
+                GameServer.Server_MessageClient(packet, pl);
+            }
+        }
+
+        /// <summary>
+        /// Exec a player-sent instruction.
+        /// </summary>
+        /// <param name="sender">Player class abstracted from server system.</param>
+        /// <param name="instruction"></param>
+        public void ProcessInstruction(Player sender, string instruction)
+        {
+            Bytecode.Bytecode.Parse(instruction, sender);
+        }
+
+        /// <summary>
+        /// Check if word is on board
+        /// </summary>
+        /// <param name="word"></param>
+        /// <returns></returns>
+        public bool CheckWordInPlay(string word)
+        {
+            word = word.ToUpper();
+            bool isConnected = false;
+            string currentChar = "";
+            List<Tuple<int, int>> labelPositions = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> lastLabelPositions = null;
+            for (int i = 0; i < word.Length; i++)
+            {
+                currentChar = word[i].ToString();
+                if (currentChar == "Q")
+                {
+                    currentChar = "Qu";
+                }
+                else if (currentChar == "U")
+                {
+                    isConnected = true;
+                    continue;
+                }
+                isConnected = false;
+                foreach (BoggleDie l in DiceLetters)
+                {
+                    if (l.CurrentLetter == currentChar)
+                    {
+                        //labelPositions.Add(ExtensionMethods.CoordinatesOf<BoggleDie>(DiceLetters, l)); //Dead
+                        labelPositions.Add(l.Position);
+                        break; // Try this for searching if it exists
+                    }
+                }
+                foreach (Tuple<int, int> t in labelPositions)
+                {
+                    if (lastLabelPositions == null)
+                    {
+                        isConnected = true;
+                        continue;
+                    }
+                    foreach (Tuple<int, int> n in lastLabelPositions)
+                    {
+                        int tupleDistanceX = Math.Abs(n.Item1 - t.Item1);
+                        int tupleDistanceY = Math.Abs(n.Item2 - t.Item2);
+                        if (tupleDistanceX <= 1 && tupleDistanceY <= 1)
+                        {
+                            isConnected = true;
+                        }
+                    }
+                }
+                Debug.Log(string.Format("Letter: {0} Connected: {1}", currentChar, isConnected));
+                if (!isConnected)
+                {
+                    break;
+                }
+                lastLabelPositions = labelPositions;
+            }
+            return isConnected;
+        }
+>>>>>>> origin/master
+
+    }
+
+    /// <summary>
+<<<<<<< HEAD
+    /// Wrapper for extension method List<T>.Shuffle()
+    /// </summary>
+    public static class ExtensionMethods
+=======
+    /// Exception for when the server is full.
+    /// </summary>
+    public class ServerFullException : Exception
+>>>>>>> origin/master
+    {
+        private static Random rng = new Random();
+
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
     }
 
     /// <summary>

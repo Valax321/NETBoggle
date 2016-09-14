@@ -1,6 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.ComponentModel;
+=======
+using System.Linq;
+using System.Text;
+using System.ComponentModel;
+using System.Threading.Tasks;
+>>>>>>> origin/master
 
 namespace NETBoggle.Networking.Bytecode
 {
@@ -62,6 +69,7 @@ namespace NETBoggle.Networking.Bytecode
         /// </summary>
         SET_NAME = 11, 
         /// <summary>
+<<<<<<< HEAD
         /// When the server closes
         /// </summary>
         SERVER_SHUTDOWN = 12,
@@ -78,6 +86,8 @@ namespace NETBoggle.Networking.Bytecode
         /// </summary>
         PLAYER_SCORE = 15,
         /// <summary>
+=======
+>>>>>>> origin/master
         /// Send a message to the client's debugger.
         /// </summary>
         SERVER_CLIENT_MESSAGE = 253, 
@@ -94,12 +104,15 @@ namespace NETBoggle.Networking.Bytecode
     {       
         const char StringTerminator = (char)0x03; //ETX character (end of text), hex 0x03
 
+<<<<<<< HEAD
         /// <summary>
         /// Here we bind a method with parameters of string and string to a parsed instruction. When bound, <see cref="Parse(string, Player)"/> will call the appropriate method.
         /// These methods will call an appropriate <see cref="BytecodeEventHandler"/> or <see cref="ServerEventHandler"/> (or their parameterised equivalents) that will execute on the client or server, respectively.
         /// </summary>
         /// <param name="b">Instruction to bind.</param>
         /// <param name="method">Method to bind to.</param>
+=======
+>>>>>>> origin/master
         static void BindInstruction(BoggleInstructions b, Action<string, string> method)
         {
             try
@@ -111,12 +124,16 @@ namespace NETBoggle.Networking.Bytecode
                 Debug.Log(string.Format("Failed to add binding {0} with method {1}", b, nameof(method)));
             }
         }
+<<<<<<< HEAD
         /// <summary>
         /// Here we bind a method with parameters of string, string and <see cref="Player"/> to a parsed instruction. When bound, <see cref="Parse(string, Player)"/> will call the appropriate method.
         /// These methods will call an appropriate <see cref="BytecodeEventHandler"/> or <see cref="ServerEventHandler"/> (or their parameterised equivalents) that will execute on the client or server, respectively.
         /// </summary>
         /// <param name="b">Instruction to bind.</param>
         /// <param name="method">Method to bind to.</param>
+=======
+
+>>>>>>> origin/master
         static void BindInstruction(BoggleInstructions b, Action<string, string, Player> method)
         {
             try
@@ -129,7 +146,11 @@ namespace NETBoggle.Networking.Bytecode
             }
         }
 
+<<<<<<< HEAD
         static Bytecode() //Binds everything at launch. Not very efficient, but it works.
+=======
+        static Bytecode()
+>>>>>>> origin/master
         {
             BindInstruction(BoggleInstructions.CONNECT, Connect);
             BindInstruction(BoggleInstructions.SERVER_CLIENT_MESSAGE, ClientServerMessage);
@@ -139,6 +160,7 @@ namespace NETBoggle.Networking.Bytecode
             BindInstruction(BoggleInstructions.READY, ClientReady);
             BindInstruction(BoggleInstructions.READY_RESPONSE, ServerRespondReady);
             BindInstruction(BoggleInstructions.SET_NAME, ClientSetName);
+<<<<<<< HEAD
             BindInstruction(BoggleInstructions.SERVER_SHUTDOWN, ServerClose);
             BindInstruction(BoggleInstructions.PLAYER_JOINED, ServerAddClientList);
             BindInstruction(BoggleInstructions.PLAYER_LEFT, ServerRemoveClientList);
@@ -147,11 +169,16 @@ namespace NETBoggle.Networking.Bytecode
 
         #region Binding Methods
 
+=======
+        }
+
+>>>>>>> origin/master
         static void Connect(string p1, string p2)
         {
             ConnectClient();
         }
 
+<<<<<<< HEAD
         static void ServerClose(string p1, string p2)
         {
             ServerShutDown();
@@ -172,6 +199,8 @@ namespace NETBoggle.Networking.Bytecode
             ClientSetScore(p1, p2.ConvertToType<uint>());
         }
 
+=======
+>>>>>>> origin/master
         static void ClientServerMessage(string p1, string p2)
         {
             SendMessage(p1);
@@ -209,8 +238,11 @@ namespace NETBoggle.Networking.Bytecode
             ClientSetFormText(elem, text_val);
         }
 
+<<<<<<< HEAD
         #endregion
 
+=======
+>>>>>>> origin/master
         #region Client Bindings
 
         /// <summary>
@@ -261,8 +293,11 @@ namespace NETBoggle.Networking.Bytecode
 
         #endregion
 
+<<<<<<< HEAD
         #region Bound events
 
+=======
+>>>>>>> origin/master
         /// <summary>
         /// Called when we connect to a client/server
         /// </summary>
@@ -271,6 +306,7 @@ namespace NETBoggle.Networking.Bytecode
         /// Called when we receive a text message from the server
         /// </summary>
         public static event Bytecode_OneParam_EventHandler<string> SendMessage;
+<<<<<<< HEAD
         /// <summary>
         /// Called when we receive a new word from the client
         /// </summary>
@@ -316,6 +352,23 @@ namespace NETBoggle.Networking.Bytecode
 
         static Dictionary<BoggleInstructions, Action<string, string>> InstructionBindings = new Dictionary<BoggleInstructions, Action<string, string>>(); // Client-side bindings
         static Dictionary<BoggleInstructions, Action<string, string, Player>> InstructionBindings_Server = new Dictionary<BoggleInstructions, Action<string, string, Player>>(); //Server-side bindings
+=======
+
+        public static event Server_OneParam_EventHandler<string> ServerReveiveWord;
+
+        public static event ServerEventHandler ClientClickReady;
+
+        public static event BytecodeEventHandler ServerRespondClickReady;
+
+        public static event Server_OneParam_EventHandler<string> SetClientName;
+
+        public static event Bytecode_TwoParam_EventHandler<string, bool> ClientSetFormState;
+
+        public static event Bytecode_TwoParam_EventHandler<string, string> ClientSetFormText;
+
+        static Dictionary<BoggleInstructions, Action<string, string>> InstructionBindings = new Dictionary<BoggleInstructions, Action<string, string>>();
+        static Dictionary<BoggleInstructions, Action<string, string, Player>> InstructionBindings_Server = new Dictionary<BoggleInstructions, Action<string, string, Player>>();
+>>>>>>> origin/master
 
         /// <summary>
         /// Convert a string to the specified type
@@ -332,7 +385,10 @@ namespace NETBoggle.Networking.Bytecode
         /// Paramater types must correspond to the types that the binding was declared with
         /// </summary>
         /// <param name="raw_instruction"></param>
+<<<<<<< HEAD
         /// <param name="p"></param>
+=======
+>>>>>>> origin/master
         public static void Parse(string raw_instruction, Player p = null)
         {
             byte player_index = (byte)char.GetNumericValue(raw_instruction[0]); //deprecated??
@@ -353,13 +409,22 @@ namespace NETBoggle.Networking.Bytecode
 
             try
             {
+<<<<<<< HEAD
                 instruction1 = s2.Split(new char[] { StringTerminator })[0]; // Get the first parameter
                 instruction2 = s2.Split(new char[] { StringTerminator })[1]; // Get the second parameter
+=======
+                instruction1 = s2.Split(new char[] { StringTerminator })[0];
+                instruction2 = s2.Split(new char[] { StringTerminator })[1];
+>>>>>>> origin/master
             }
 
             catch (Exception e)
             {
+<<<<<<< HEAD
                 System.Windows.Forms.MessageBox.Show(e.ToString(), "Exception Thrown", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error); // Serious error, interrupt us.
+=======
+                System.Windows.Forms.MessageBox.Show(e.ToString(), "Exception Thrown", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+>>>>>>> origin/master
                 return;
             }
 
@@ -375,7 +440,11 @@ namespace NETBoggle.Networking.Bytecode
                 }
             }
 
+<<<<<<< HEAD
             catch //(Exception e)
+=======
+            catch (Exception e)
+>>>>>>> origin/master
             {
                 //Debug.Log(e.ToString());
                 Debug.Log(string.Format("Key not found: {0}", instruction.ToString()));

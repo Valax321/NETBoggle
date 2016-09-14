@@ -25,11 +25,14 @@ namespace NETBoggle.Networking
         public Tuple<int, int> Position = new Tuple<int, int>(0, 0);
 
         /// <summary>
+<<<<<<< HEAD
         /// Has this die been used for a word yet?
         /// </summary>
         public bool Consumed;
 
         /// <summary>
+=======
+>>>>>>> origin/master
         /// Constructor for die.
         /// </summary>
         /// <param name="letters">Letters this die could potentially be.</param>

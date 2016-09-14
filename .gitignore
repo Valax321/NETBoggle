@@ -19,13 +19,15 @@ $RECYCLE.BIN/
 
 #Compiled folder
 out/
+packages/
 NETBoggleClient/bin/
 NETBoggleClient/obj/
 NETBoggleClient/NETBoggle.Networking/obj
 NETBoggleClient/NETBoggle.Networking/bin
 
-!packages/*.dll
+packages/*
 
+packages/*.dll
 Assets/
 
 # =========================
